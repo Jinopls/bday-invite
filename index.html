@@ -46,13 +46,15 @@
     .tv[data-sky="day"] .tv-frame{box-shadow:12px 14px 0 #090814,0 0 88px #ffba676e}
     .tv[data-sky="night"] .tv-frame{box-shadow:12px 14px 0 #090814,0 0 82px #8883f075}
     .sky-dial{position:absolute;top:-56px;right:24px;z-index:5;width:108px;height:108px;perspective:700px;pointer-events:none;filter:drop-shadow(5px 6px 0 #0d0b1ac0)}
-    .sky-wheel{position:absolute;inset:0;transform-style:preserve-3d;transition:transform 1s cubic-bezier(.23,1.15,.31,1)}
-    .tv[data-sky="night"] .sky-wheel{transform:rotateY(180deg)}
-    .sky-face{position:absolute;inset:8px;display:grid;place-items:center;border:5px solid #141224;border-radius:50%;backface-visibility:hidden;box-shadow:inset -6px -6px 0 #0002}
+    .sky-wheel{position:absolute;inset:0;transition:transform 1s cubic-bezier(.23,1.15,.31,1)}
+    .tv[data-sky="night"] .sky-wheel{transform:rotate(180deg)}
+    .sky-face{position:absolute;inset:8px;display:grid;place-items:center;border:5px solid #141224;border-radius:50%;box-shadow:inset -6px -6px 0 #0002}
     .sky-face svg{position:relative;z-index:1;width:85%;height:85%}
     .sky-face--day{background:#ffc76c}
     .sky-face--day:before{content:"";position:absolute;inset:-17px;border-radius:50%;background:repeating-conic-gradient(#ffd36b 0deg 13deg,transparent 13deg 45deg);mask:radial-gradient(circle,transparent 0 54%,#000 55%);animation:skyRays 20s linear infinite}
-    .sky-face--night{background:#334a79;transform:rotateY(180deg)}
+    .sky-face--night{background:#334a79;transform:rotate(180deg);visibility:hidden}
+    .tv[data-sky="night"] .sky-face--day{visibility:hidden}
+    .tv[data-sky="night"] .sky-face--night{visibility:visible}
     .sky-face--night:before,.sky-face--night:after{content:"✦";position:absolute;color:#b6e7ff;font-size:17px}
     .sky-face--night:before{top:12px;right:8px}
     .sky-face--night:after{bottom:11px;right:18px;font-size:12px}
@@ -184,8 +186,6 @@
                 <svg viewBox="0 0 100 100" focusable="false">
                   <path d="M50 5v11M50 84v11M5 50h11M84 50h11M18 18l9 9M73 73l9 9M82 18l-9 9M27 73l-9 9" fill="none" stroke="#994c25" stroke-width="7" stroke-linecap="round"/>
                   <circle cx="50" cy="50" r="27" fill="#ffe58c" stroke="#994c25" stroke-width="5"/>
-                  <circle cx="41" cy="46" r="3" fill="#994c25"/><circle cx="59" cy="46" r="3" fill="#994c25"/>
-                  <path d="M40 58q10 11 20 0" fill="none" stroke="#994c25" stroke-width="4" stroke-linecap="round"/>
                 </svg>
               </div>
               <div class="sky-face sky-face--night">
