@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#171527">
-  <meta name="description" content="A birthday weekend near Nijmegen. Overnight LAN, a daytime hangout, and a suspicious number of cables.">
-  <title>Birthday LAN — 2027</title>
+  <meta name="description" content="Obligashon pe bday. A gaming get-together that we're finally making happen.">
+  <title>Obligashon pe bday</title>
   <style>
     :root { --ink:#171527; --night:#1b1830; --paper:#f8f3e9; --lime:#d1ff69; --pink:#ff6f9a; --lavender:#aa9bff; --cyan:#7fe2e4; --muted:#b8b3cc; --shadow:7px 7px 0 #0e0c1c; --radius:14px; }
     *{box-sizing:border-box}
@@ -28,10 +28,10 @@
     .nav .nav-cta{background:var(--lime);color:var(--ink);padding:9px 14px;border:2px solid #11101e;box-shadow:4px 4px 0 var(--pink)}
     .hero{position:relative;overflow:hidden;padding:94px 0 98px;background:radial-gradient(circle at 82% 22%,#54438e88,transparent 33%),radial-gradient(circle at 22% 80%,#ff6f9a21,transparent 28%),var(--night)}
     .hero:after{content:"";position:absolute;left:-5%;right:-5%;bottom:-1px;height:25px;background:linear-gradient(135deg,transparent 25%,var(--paper) 25%) 0 0/35px 35px,linear-gradient(225deg,transparent 25%,var(--paper) 25%) 0 0/35px 35px}
-    .hero-grid{display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:58px}
-    .hero h1{margin:20px 0 20px;font-family:"Courier New",monospace;font-weight:900;font-size:clamp(3.6rem,7vw,7rem);line-height:.98;letter-spacing:-.085em;text-shadow:5px 5px 0 #0008}
+    .hero-grid{display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:48px}
+    .hero h1{margin:20px 0 24px;font-family:"Courier New",monospace;font-weight:900;font-size:clamp(2.8rem,5.4vw,5.4rem);line-height:1.01;letter-spacing:-.085em;text-shadow:5px 5px 0 #0008}
     .hero h1 span{color:var(--lime);display:block;white-space:nowrap}
-    .hero-text{max-width:480px;color:#ded8f0;font-size:1.07rem}
+    .hero-text{max-width:480px;color:#ded8f0;font-size:1.04rem;margin-bottom:30px}
     .highlights{display:flex;flex-wrap:wrap;gap:9px;margin:26px 0 33px}
     .chip{padding:7px 12px;border:1px solid #ffffff5c;background:#ffffff0d;font-size:.68rem;letter-spacing:.04em;font-weight:800;text-transform:uppercase}
     .primary-btn,.secondary-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:15px 22px;font-family:"Courier New",monospace;font-size:.92rem;font-weight:900;letter-spacing:.04em;text-transform:uppercase;text-decoration:none;border:3px solid var(--ink);box-shadow:6px 6px 0 var(--pink);transition:transform .15s,box-shadow .15s}
@@ -39,26 +39,27 @@
     .secondary-btn{color:var(--paper);background:#302a50;box-shadow:5px 5px 0 var(--lavender)}
     .primary-btn:hover,.secondary-btn:hover{transform:translate(3px,3px);box-shadow:3px 3px 0 var(--pink)}
     .hero-hint{display:block;margin-top:18px;color:var(--muted);font-family:monospace;font-size:.78rem}
-    .cabinet{position:relative;max-width:470px;margin:auto;transform:rotate(2deg)}
-    .cabinet-frame{border:9px solid #080711;border-radius:22px;background:#6f61c5;box-shadow:12px 13px 0 #090814,0 0 65px #9c6af44b;padding:22px}
-    .cabinet-top{text-align:center;background:var(--pink);color:#1b102a;padding:9px;border:4px solid #141123;border-radius:7px 7px 0 0;box-shadow:inset 0 -7px 0 #db4d80;font-size:1.05rem;letter-spacing:.15em}
-    .screen{position:relative;overflow:hidden;min-height:315px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:11px;padding:24px 10px;margin-top:12px;border:13px solid #25213f;border-radius:18px;background:radial-gradient(circle at 50% 42%,#463e74,#141425 76%);box-shadow:inset 0 0 50px #000a;color:var(--paper)}
-    .screen:after{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,#0001 0 2px,transparent 2px 5px)}
-    .screen-top{font-size:.68rem;color:var(--lime);text-align:center;letter-spacing:.16em}
-    .sprite{width:212px;max-width:75%;filter:drop-shadow(7px 8px 0 #0008);animation:bob 3.2s ease-in-out infinite}
-    .screen-text{text-align:center;font-size:1.45rem;color:var(--cyan);text-shadow:3px 3px 0 #39265b}
-    .blink{animation:blink 1.4s steps(2,end) infinite}
-    .cabinet-controls{display:flex;align-items:center;justify-content:space-around;padding:15px 7px 0}
-    .dpad{position:relative;width:64px;height:64px}
-    .dpad:before,.dpad:after{content:"";position:absolute;background:#242035;border:3px solid #100d20;border-radius:3px}
-    .dpad:before{width:25px;height:60px;left:20px;top:0}.dpad:after{height:25px;width:60px;top:20px;left:0}
-    .control-dot{width:30px;height:30px;border:3px solid #201226;border-radius:50%;background:var(--pink);box-shadow:inset -4px -4px 0 #9a335f,4px 3px 0 #1d1233}
-    .control-dot.last{background:var(--lime);box-shadow:inset -4px -4px 0 #87ab40,4px 3px 0 #1d1233}
-    .float-star{position:absolute;color:var(--lime);font:900 2rem monospace;animation:blink 2.5s steps(2,end) infinite}
-    .float-star.one{left:-38px;top:10px}.float-star.two{right:-28px;bottom:32px;color:var(--pink);animation-delay:.4s}
-    .ticker{background:var(--paper);color:var(--ink);overflow:hidden;padding:13px 0;border-bottom:4px solid var(--night)}
-    .ticker-inner{font-size:.82rem;letter-spacing:.08em;text-align:center}
-    .ticker-inner b{color:#8c3ca3;margin:0 20px}
+    .tv{position:relative;max-width:500px;margin:auto;animation:tvFloat 6s ease-in-out infinite}
+    .tv-frame{background:#454153;border:9px solid #0c0b16;border-radius:24px;padding:17px 17px 12px;box-shadow:12px 14px 0 #090814,0 0 65px #9c6af44b}
+    .tv-screen{position:relative;aspect-ratio:4/3;overflow:hidden;border:9px solid #1d1a2c;border-radius:12px;background:#151329;box-shadow:inset 0 0 50px #000a}
+    .tv-screen:after{content:"";position:absolute;inset:0;pointer-events:none;z-index:3;opacity:.5;background:repeating-linear-gradient(0deg,#0004 0 2px,transparent 2px 5px)}
+    .tv-screen[data-game="0"]{--game-a:#343b7c;--game-b:#a16de5}
+    .tv-screen[data-game="1"]{--game-a:#195e9c;--game-b:#e88a4f}
+    .tv-screen[data-game="2"]{--game-a:#4e276b;--game-b:#f05f8f}
+    .tv-placeholder{position:relative;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;isolation:isolate;overflow:hidden;background:radial-gradient(circle at 50% 32%,var(--game-b),var(--game-a) 55%,#0e1025)}
+    .tv-placeholder:before{content:"";position:absolute;z-index:-1;left:-60%;right:-60%;top:45%;bottom:-65%;background-image:linear-gradient(#ffffff3d 1px,transparent 1px),linear-gradient(90deg,#ffffff3d 1px,transparent 1px);background-size:30px 30px;transform:perspective(200px) rotateX(58deg);animation:screenDrift 3s linear infinite}
+    .tv-placeholder:after{content:"";position:absolute;z-index:-1;width:115px;height:115px;top:12%;left:calc(50% - 57px);border:8px solid #ffffff20;transform:rotate(45deg);animation:shapeSpin 18s linear infinite}
+    .tv-label{font:900 .7rem "Courier New",monospace;letter-spacing:.15em;color:var(--lime);background:#100f23dd;padding:6px 11px}
+    .tv-game-title{font:900 clamp(1.5rem,3vw,2.5rem)/1.1 "Courier New",monospace;text-align:center;letter-spacing:-.045em;text-shadow:3px 4px 0 #0009;max-width:90%;margin:12px 0}
+    .tv-wait{font:900 .62rem "Courier New",monospace;letter-spacing:.08em;color:#e2dcf1;background:#100f23bd;padding:7px 10px}
+    .tv-video{width:100%;height:100%;border:0;display:block}
+    .tv-video[hidden],.tv-placeholder[hidden]{display:none}
+    .tv-bottom{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 7px 3px;color:#d8d3e6;font:900 .65rem monospace;letter-spacing:.15em}
+    .tv-led{display:inline-block;width:11px;height:11px;border-radius:50%;background:var(--lime);box-shadow:0 0 12px var(--lime);animation:blink 2s steps(2,end) infinite}
+    .tv-controls{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:23px}
+    .tv-clip{min-width:0;padding:11px 7px;border:2px solid #867cae;background:#211e36;color:#c9c1df;font:900 .69rem "Courier New",monospace;letter-spacing:.015em;transition:background .2s,transform .2s}
+    .tv-clip:hover{background:#3b345b;transform:translateY(-2px)}
+    .tv-clip[aria-pressed="true"]{background:var(--pink);color:var(--ink);border-color:var(--ink);box-shadow:3px 3px 0 var(--lime)}
     section.section{padding:94px 0}
     .section-heading{max-width:720px;margin:0 auto 42px;text-align:center}
     .section-heading h2{font:900 clamp(2.3rem,5vw,4rem)/1.05 "Courier New",monospace;text-transform:uppercase;letter-spacing:-.075em;margin:14px 0}
@@ -82,18 +83,14 @@
     .spec h3{font:900 1.28rem "Courier New",monospace;letter-spacing:-.035em;margin:0 0 10px}
     .spec p{color:#c5bddd;margin:0;font-size:.9rem}
     .spec .large{font:900 1.17rem "Courier New",monospace;color:var(--lime);margin-bottom:8px}
-    .quest{background:var(--lime);color:var(--ink)}
-    .quest .section-heading p{color:#4e533d}
-    .quest-grid{display:grid;grid-template-columns:1fr 1fr;gap:25px;align-items:center}
-    .quest-box{background:var(--paper);border:4px solid var(--ink);padding:24px 26px;box-shadow:8px 8px 0 var(--ink)}
+    .packing-toggle{margin:34px auto 0;max-width:760px;border:2px solid #5c567e;background:#2c254c;box-shadow:5px 5px 0 #100d22}
+    .packing-toggle summary{cursor:pointer;padding:15px 20px;font:900 .93rem "Courier New",monospace;list-style-position:inside}
+    .packing-toggle summary:hover{color:var(--lime)}
+    .packing-content{padding:0 20px 20px}
     .quest-list{list-style:none;padding:0;margin:0}
-    .quest-list li{padding:13px 3px;display:flex;align-items:flex-start;gap:14px;border-bottom:1px dashed #aaa4aa}
+    .quest-list li{padding:10px 3px;display:flex;align-items:flex-start;gap:14px;border-bottom:1px dashed #77708f}
     .quest-list li:last-child{border-bottom:0}
-    .quest-check{font-family:monospace;font-weight:900;color:#6b4791}
-    .quest-aside{padding:18px}
-    .quest-aside h3{font:900 2.15rem/1.05 "Courier New",monospace;letter-spacing:-.07em}
-    .quest-aside p{color:#3a3b36;max-width:390px}
-    .quest-sticker{display:inline-block;margin-top:13px;background:var(--pink);border:3px solid var(--ink);box-shadow:5px 5px 0 var(--ink);padding:13px 16px;transform:rotate(-3deg);font:900 .83rem monospace}
+    .quest-check{font-family:monospace;font-weight:900;color:var(--pink)}
     .rsvp{background:radial-gradient(circle at 90% 20%,#433c73,transparent 50%),var(--night)}
     .form-shell{max-width:845px;margin:auto;background:#f8f3e9;color:var(--ink);border:5px solid #090915;box-shadow:12px 12px 0 var(--pink)}
     .form-title{background:#413875;color:white;padding:17px 23px;display:flex;justify-content:space-between;gap:14px;align-items:center;font:900 .92rem "Courier New",monospace}
@@ -129,11 +126,15 @@
     .confetti{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:80}
     .confetti i{position:absolute;top:-30px;width:10px;height:15px;background:var(--pink);animation:fall 2.9s linear forwards}
     .confetti i:nth-child(3n){background:var(--lime)}.confetti i:nth-child(3n+1){background:var(--cyan)}
-    @keyframes bob{0%,100%{transform:translateY(-3px)}50%{transform:translateY(9px)}}
+    .has-motion .reveal{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease}
+    .has-motion .reveal.in-view{opacity:1;transform:none}
+    @keyframes tvFloat{0%,100%{transform:translateY(-3px) rotate(1.5deg)}50%{transform:translateY(7px) rotate(.5deg)}}
+    @keyframes screenDrift{to{background-position:0 30px,30px 0}}
+    @keyframes shapeSpin{to{transform:rotate(405deg)}}
     @keyframes blink{0%,48%{opacity:1}50%,100%{opacity:.35}}
     @keyframes fall{to{transform:translateY(110vh) rotate(720deg);opacity:0}}
-    @media(max-width:850px){.hero-grid{grid-template-columns:1fr;gap:60px}.hero{padding:66px 0 90px}.hero h1{font-size:clamp(3.8rem,11vw,6rem)}.cabinet{width:min(400px,87%)}.spec-grid{grid-template-columns:1fr 1fr}.quest-grid{grid-template-columns:1fr}.quest-aside{order:-1}.nav{gap:14px}}
-    @media(max-width:600px){.wrap{width:min(100% - 32px,1120px)}.header-inner{min-height:68px}.brand{font-size:.82rem}.nav a:not(.nav-cta){display:none}.nav .nav-cta{font-size:.67rem;padding:8px}.hero h1{font-size:clamp(3.2rem,14vw,5rem)}.hero-text{font-size:.96rem}.screen{min-height:265px}.screen-text{font-size:1.15rem}.mode-grid,.spec-grid,.fields{grid-template-columns:1fr}.section.section{padding:72px 0}.section-heading h2{font-size:2.45rem}.mode-card{padding:22px}.form-body{padding:18px}.form-title{padding:15px;font-size:.73rem}.ticker-inner{font-size:.7rem}.ticker-inner b{margin:0 6px}.quest-aside{padding:5px}.hero-hint{font-size:.68rem}}
+    @media(max-width:850px){.hero-grid{grid-template-columns:1fr;gap:48px}.hero{padding:66px 0 90px}.hero h1{font-size:clamp(3rem,9.8vw,5.4rem)}.tv{width:min(440px,92%)}.spec-grid{grid-template-columns:1fr 1fr}.nav{gap:14px}}
+    @media(max-width:600px){.wrap{width:min(100% - 32px,1120px)}.header-inner{min-height:68px}.brand{font-size:.82rem}.nav a:not(.nav-cta){display:none}.nav .nav-cta{font-size:.67rem;padding:8px}.hero h1{font-size:clamp(2.6rem,10.7vw,4.2rem)}.hero-text{font-size:.96rem}.tv{width:100%}.tv-frame{padding:10px;border-width:7px}.tv-screen{border-width:6px}.tv-clip{font-size:.58rem;padding:10px 4px}.mode-grid,.spec-grid,.fields{grid-template-columns:1fr}.section.section{padding:72px 0}.section-heading h2{font-size:2.4rem}.mode-card{padding:22px}.form-body{padding:18px}.form-title{padding:15px;font-size:.73rem}}
     @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
   </style>
 </head>
@@ -141,9 +142,9 @@
   <div id="top"></div>
   <header class="header">
     <div class="wrap header-inner">
-      <a class="brand pixel" href="#top"><span class="spark">✦</span> BIRTHDAY <span aria-hidden="true">//</span> LAN 2027</a>
+      <a class="brand pixel" href="#top"><span class="spark">✦</span> OBLIGASHON <span aria-hidden="true">//</span> BDAY</a>
       <nav class="nav" aria-label="Main navigation">
-        <a href="#modes">The plan</a>
+        <a href="#modes">Destiny</a>
         <a href="#details">Details</a>
         <a href="#rsvp" class="nav-cta pixel">RSVP ↗</a>
       </nav>
@@ -154,48 +155,35 @@
     <section class="hero grid-bg" aria-labelledby="hero-title">
       <div class="wrap hero-grid">
         <div>
-          <div class="eyebrow">✳ Another birthday. Apparently.</div>
-          <h1 id="hero-title">BIRTHDAY <span>WEEKEND.</span></h1>
-          <p class="hero-text">I'm getting older, so I'm celebrating the responsible way: a room full of PCs, an unreasonable number of cables, and very little sleep.</p>
-          <div class="highlights" aria-label="Party highlights">
-            <span class="chip">🎮 Overnight LAN</span>
-            <span class="chip">✦ Birthday hangout</span>
-            <span class="chip">⌁ Nijmegen area</span>
-          </div>
+          <div class="eyebrow">✳ Birthday LAN · 2027</div>
+          <h1 id="hero-title">OBLIGASHON <span>PE BDAY</span></h1>
+          <p class="hero-text">I'm getting older, and we've been trying to get a gaming get-together going for a while. So let's actually do it. Please bring deo. I still need to sort a few things out first.</p>
           <a class="primary-btn" href="#modes" id="start-button">▶ Press start</a>
-          <span class="hero-hint">↑ Ethernet preferred. Sleep negotiable.</span>
         </div>
-        <div class="cabinet" aria-label="Decorative retro arcade cabinet">
-          <span class="float-star one" aria-hidden="true">✳</span><span class="float-star two" aria-hidden="true">✦</span>
-          <div class="cabinet-frame">
-            <div class="cabinet-top pixel">LAN // 2027</div>
-            <div class="screen">
-              <div class="screen-top pixel">★ SLEEP: 0 HP ★</div>
-              <svg class="sprite" viewBox="0 0 240 170" role="img" aria-label="Pixel-art game controller">
-                <g shape-rendering="crispEdges">
-                  <path d="M56 28h128v12h24v12h12v24h8v48h-8v12h-12v12h-36v-12h-16v-12H84v12H68v12H32v-12H20v-12h-8V76h8V52h12V40h24z" fill="#111022"/>
-                  <path d="M56 40h128v12h24v24h8v48h-12v12h-32v-12h-16v-12H84v12H68v12H36v-12H24V76h8V52h24z" fill="#a99bff"/>
-                  <path d="M56 40h128v12H56z" fill="#dfd6ff"/><path d="M32 76h176v12H32z" fill="#bdb1ff"/>
-                  <path d="M68 68h16v20h20v16H84v20H68v-20H48V88h20z" fill="#26223d"/>
-                  <rect x="157" y="82" width="21" height="21" fill="#ff6f9a"/><rect x="182" y="104" width="21" height="21" fill="#d1ff69"/>
-                  <rect x="111" y="114" width="22" height="7" fill="#352956"/><rect x="138" y="114" width="13" height="7" fill="#352956"/>
-                  <rect x="58" y="53" width="119" height="7" fill="#e4ddff"/>
-                </g>
-              </svg>
-              <div class="screen-text pixel">ONE MORE ROUND?</div>
-              <div class="screen-top blink pixel">▼ FAMOUS LAST WORDS ▼</div>
+        <div class="tv" aria-label="Retro monitor with selectable gameplay slots">
+          <div class="tv-frame">
+            <div class="tv-screen" id="tv-screen" data-game="0">
+              <div class="tv-placeholder" id="tv-placeholder" aria-live="polite">
+                <span class="tv-label">AV 01 / PREVIEW</span>
+                <strong class="tv-game-title" id="tv-game-title">PREDECESSOR</strong>
+                <span class="tv-wait">GAMEPLAY CLIP COMING SOON</span>
+              </div>
+              <iframe class="tv-video" id="tv-video" title="Gameplay clip" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen hidden></iframe>
             </div>
-            <div class="cabinet-controls" aria-hidden="true"><div class="dpad"></div><div class="control-dot"></div><div class="control-dot last"></div></div>
+            <div class="tv-bottom"><span>VIDEO INPUT / HDMI</span><span><span class="tv-led" aria-hidden="true"></span> ON</span></div>
+          </div>
+          <div class="tv-controls" role="group" aria-label="Choose game footage">
+            <button type="button" class="tv-clip" data-clip="0" aria-pressed="true">Predecessor</button>
+            <button type="button" class="tv-clip" data-clip="1" aria-pressed="false">Mario Kart</button>
+            <button type="button" class="tv-clip" data-clip="2" aria-pressed="false">Smash Bros.</button>
           </div>
         </div>
       </div>
     </section>
 
-    <div class="ticker" aria-label="Party announcement"><div class="ticker-inner pixel">Sleep optional <b>✳</b> Ethernet preferred <b>✳</b> Snacks essential <b>✳</b> Ping unknown</div></div>
-
     <section class="section modes" id="modes" aria-labelledby="modes-title">
       <div class="wrap">
-        <div class="section-heading"><div class="eyebrow" style="color:#7752a0">01 / The plan</div><h2 id="modes-title">HOW LONG ARE YOU STAYING?</h2><p>Go for the overnight LAN, show up for the birthday, or make the objectively sensible choice to sleep in your own bed.</p></div>
+        <div class="section-heading"><h2 id="modes-title">CHOOSE YOUR DESTINY</h2><p>(how long do you want to stay?)</p></div>
         <div class="mode-grid">
           <button class="mode-card" type="button" data-mode="Full weekend: overnight LAN + birthday" aria-pressed="false">
             <span class="mode-icon" aria-hidden="true">🎮</span><h3>THE ALL-NIGHTER</h3><p>Bring your PC or console. We'll spend ages deciding what to play and then suddenly it'll be 5 AM.</p><div class="mode-foot">OVERNIGHT LAN + BIRTHDAY →</div>
@@ -209,34 +197,27 @@
 
     <section class="section details grid-bg" id="details" aria-labelledby="details-title">
       <div class="wrap">
-        <div class="section-heading"><div class="eyebrow">02 / Useful information</div><h2 id="details-title">THE ACTUAL DETAILS</h2><p>I'm still sorting out the date and venue. This page will get updated once the boring logistics are settled.</p></div>
+        <div class="section-heading"><h2 id="details-title">DETAILS</h2></div>
         <div class="spec-grid">
           <div class="spec"><div class="spec-number">[01] WHEN</div><h3>THE DATE</h3><div class="large" id="date-label">TO BE ANNOUNCED</div><p>LAN overnight, birthday gathering the next day.</p></div>
           <div class="spec"><div class="spec-number">[02] WHERE</div><h3>THE LOCATION</h3><div class="large" id="venue-label">NIJMEGEN AREA</div><p>Exact venue and address will be shared with guests.</p></div>
           <div class="spec"><div class="spec-number">[03] WHAT</div><h3>THE PLAN</h3><div class="large">GAMES & FOOD</div><p>Some games, some hanging out, and probably more snacks than anyone needs.</p></div>
         </div>
-      </div>
-    </section>
-
-    <section class="section quest" id="bring" aria-labelledby="quest-title">
-      <div class="wrap">
-        <div class="section-heading"><div class="eyebrow" style="color:#6c4c7d">03 / Don't forget</div><h2 id="quest-title">PACKING LIST</h2><p>For the overnight LAN crowd. If you're coming for the birthday only, you can ignore most of this.</p></div>
-        <div class="quest-grid">
-          <div class="quest-box"><ul class="quest-list">
+        <details class="packing-toggle">
+          <summary>LAN packing list</summary>
+          <div class="packing-content"><ul class="quest-list">
             <li><span class="quest-check">[✓]</span><span>Your PC or console + power cables</span></li>
             <li><span class="quest-check">[✓]</span><span>Mouse, keyboard, controller & headset as needed</span></li>
             <li><span class="quest-check">[✓]</span><span>Ethernet cable if you have one</span></li>
             <li><span class="quest-check">[✓]</span><span>Sleeping bag / air mattress for overnight guests</span></li>
-            <li><span class="quest-check">[✓]</span><span>Game suggestions (we'll probably argue about them)</span></li>
           </ul></div>
-          <div class="quest-aside"><div class="eyebrow" style="color:#6c4c7d">A small request</div><h3>DON'T FORGET<br>YOUR CABLES.</h3><p>Seriously. Check your setup before leaving. Nobody wants to spend the first hour looking for a spare power lead.</p><div class="quest-sticker">⚡ CABLE MANAGEMENT IS A LIE</div></div>
-        </div>
+        </details>
       </div>
     </section>
 
     <section class="section rsvp grid-bg" id="rsvp" aria-labelledby="rsvp-title">
       <div class="wrap">
-        <div class="section-heading"><div class="eyebrow">04 / RSVP</div><h2 id="rsvp-title">ARE YOU IN?</h2><p>Let me know what you're coming for so I can plan space, power, and how much food to buy.</p></div>
+        <div class="section-heading"><div class="eyebrow">03 / RSVP</div><h2 id="rsvp-title">ARE YOU IN?</h2><p>Let me know what you're coming for so I can plan space, power, and how much food to buy.</p></div>
         <div class="form-shell">
           <div class="form-title"><span>▣ RSVP FORM</span><span>STATUS: OPEN</span></div>
           <div class="form-body">
@@ -274,6 +255,48 @@
     };
     document.getElementById('date-label').textContent = PARTY.dateLabel;
     document.getElementById('venue-label').textContent = PARTY.venueLabel;
+
+    // Replace the blank videoId fields once gameplay links and timestamps are chosen.
+    const GAME_CLIPS = [
+      {title:'Predecessor',videoId:'',start:0},
+      {title:'Mario Kart',videoId:'',start:0},
+      {title:'Super Smash Bros.',videoId:'',start:0}
+    ];
+    const tvScreen=document.getElementById('tv-screen');
+    const tvPlaceholder=document.getElementById('tv-placeholder');
+    const tvVideo=document.getElementById('tv-video');
+    const clipButtons=[...document.querySelectorAll('[data-clip]')];
+    function showClip(index){
+      const clip=GAME_CLIPS[index];
+      if(!clip)return;
+      tvScreen.dataset.game=String(index);
+      document.getElementById('tv-game-title').textContent=clip.title.toUpperCase();
+      clipButtons.forEach(button=>button.setAttribute('aria-pressed',String(Number(button.dataset.clip)===index)));
+      if(/^[A-Za-z0-9_-]{11}$/.test(clip.videoId)){
+        tvVideo.title=clip.title+' gameplay';
+        tvVideo.src='https://www.youtube-nocookie.com/embed/'+clip.videoId+'?start='+Math.max(0,Math.floor(clip.start))+'&rel=0&playsinline=1';
+        tvPlaceholder.hidden=true;
+        tvVideo.hidden=false;
+      }else{
+        tvVideo.hidden=true;
+        tvVideo.removeAttribute('src');
+        tvPlaceholder.hidden=false;
+      }
+    }
+    clipButtons.forEach(button=>button.addEventListener('click',()=>showClip(Number(button.dataset.clip))));
+    showClip(0);
+
+    if('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches){
+      const reveals=[...document.querySelectorAll('.mode-card,.spec,.packing-toggle,.form-shell')];
+      reveals.forEach(element=>element.classList.add('reveal'));
+      document.documentElement.classList.add('has-motion');
+      const observer=new IntersectionObserver(entries=>{
+        entries.forEach(entry=>{
+          if(entry.isIntersecting){entry.target.classList.add('in-view');observer.unobserve(entry.target);}
+        });
+      },{threshold:.08,rootMargin:'0px 0px -30px 0px'});
+      reveals.forEach(element=>observer.observe(element));
+    }
 
     const modes = [...document.querySelectorAll('[data-mode]')];
     const modeSelect = document.getElementById('mode-select');
