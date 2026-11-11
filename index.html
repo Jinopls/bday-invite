@@ -256,10 +256,10 @@
     document.getElementById('date-label').textContent = PARTY.dateLabel;
     document.getElementById('venue-label').textContent = PARTY.venueLabel;
 
-    // Replace the blank videoId fields once gameplay links and timestamps are chosen.
+    // Gameplay clips. Empty IDs leave their selector as a styled preview.
     const GAME_CLIPS = [
-      {title:'Predecessor',videoId:'',start:0},
-      {title:'Mario Kart',videoId:'',start:0},
+      {title:'Predecessor',videoId:'5f6hqYt5SXA',start:30,end:40},
+      {title:'Mario Kart',videoId:'_43cq3DalZw',start:0},
       {title:'Super Smash Bros.',videoId:'',start:0}
     ];
     const tvScreen=document.getElementById('tv-screen');
@@ -274,7 +274,9 @@
       clipButtons.forEach(button=>button.setAttribute('aria-pressed',String(Number(button.dataset.clip)===index)));
       if(/^[A-Za-z0-9_-]{11}$/.test(clip.videoId)){
         tvVideo.title=clip.title+' gameplay';
-        tvVideo.src='https://www.youtube-nocookie.com/embed/'+clip.videoId+'?start='+Math.max(0,Math.floor(clip.start))+'&rel=0&playsinline=1';
+        const start=Math.max(0,Math.floor(clip.start||0));
+        const end=clip.end&&clip.end>start?'&end='+Math.floor(clip.end):'';
+        tvVideo.src='https://www.youtube-nocookie.com/embed/'+clip.videoId+'?start='+start+end+'&autoplay=1&mute=1&loop=1&playlist='+clip.videoId+'&controls=0&rel=0&playsinline=1';
         tvPlaceholder.hidden=true;
         tvVideo.hidden=false;
       }else{
@@ -304,10 +306,7 @@
       modeSelect.value = value;
       modes.forEach(card => card.setAttribute('aria-pressed', String(card.dataset.mode === value)));
     }
-    modes.forEach(card => card.addEventListener('click', () => {
-      selectMode(card.dataset.mode);
-      document.getElementById('rsvp').scrollIntoView({behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'});
-    }));
+    modes.forEach(card => card.addEventListener('click', () => selectMode(card.dataset.mode)));
     modeSelect.addEventListener('change', () => selectMode(modeSelect.value));
 
     let currentMessage = '';
