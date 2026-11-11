@@ -43,9 +43,9 @@
     .tv-frame{background:#454153;border:9px solid #0c0b16;border-radius:24px;padding:17px 17px 12px;box-shadow:12px 14px 0 #090814,0 0 65px #9c6af44b}
     .tv-screen{position:relative;aspect-ratio:4/3;overflow:hidden;border:9px solid #1d1a2c;border-radius:12px;background:#151329;box-shadow:inset 0 0 50px #000a}
     .tv-screen:after{content:"";position:absolute;inset:0;pointer-events:none;z-index:3;opacity:.5;background:repeating-linear-gradient(0deg,#0004 0 2px,transparent 2px 5px)}
-    .tv-screen[data-game="0"]{--game-a:#343b7c;--game-b:#a16de5}
-    .tv-screen[data-game="1"]{--game-a:#195e9c;--game-b:#e88a4f}
-    .tv-screen[data-game="2"]{--game-a:#4e276b;--game-b:#f05f8f}
+    .tv-screen[data-game="0"]{--game-a:#66571a;--game-b:#f4b843}
+    .tv-screen[data-game="1"]{--game-a:#343b7c;--game-b:#a16de5}
+    .tv-screen[data-game="2"]{--game-a:#195e9c;--game-b:#e88a4f}
     .tv-screen[data-game="3"]{--game-a:#982c83;--game-b:#24a1ba}
     .tv-placeholder{position:relative;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;isolation:isolate;overflow:hidden;background:radial-gradient(circle at 50% 32%,var(--game-b),var(--game-a) 55%,#0e1025)}
     .tv-placeholder:before{content:"";position:absolute;z-index:-1;left:-60%;right:-60%;top:45%;bottom:-65%;background-image:linear-gradient(#ffffff3d 1px,transparent 1px),linear-gradient(90deg,#ffffff3d 1px,transparent 1px);background-size:30px 30px;transform:perspective(200px) rotateX(58deg);animation:screenDrift 3s linear infinite}
@@ -166,7 +166,7 @@
             <div class="tv-screen" id="tv-screen" data-game="0">
               <div class="tv-placeholder" id="tv-placeholder" aria-live="polite">
                 <span class="tv-label">AV 01 / PREVIEW</span>
-                <strong class="tv-game-title" id="tv-game-title">PREDECESSOR</strong>
+                <strong class="tv-game-title" id="tv-game-title">THE FINALS</strong>
                 <span class="tv-wait">GAMEPLAY CLIP COMING SOON</span>
               </div>
               <iframe class="tv-video" id="tv-video" title="Gameplay clip" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen hidden></iframe>
@@ -174,9 +174,9 @@
             <div class="tv-bottom"><span>VIDEO INPUT / HDMI</span><span><span class="tv-led" aria-hidden="true"></span> ON</span></div>
           </div>
           <div class="tv-controls" role="group" aria-label="Choose game footage">
-            <button type="button" class="tv-clip" data-clip="0" aria-pressed="true">Predecessor</button>
-            <button type="button" class="tv-clip" data-clip="1" aria-pressed="false">Mario Kart</button>
-            <button type="button" class="tv-clip" data-clip="2" aria-pressed="false">Smash Bros.</button>
+            <button type="button" class="tv-clip" data-clip="0" aria-pressed="true">The Finals</button>
+            <button type="button" class="tv-clip" data-clip="1" aria-pressed="false">Predecessor</button>
+            <button type="button" class="tv-clip" data-clip="2" aria-pressed="false">Mario Kart</button>
             <button type="button" class="tv-clip" data-clip="3" aria-pressed="false">Just Dance</button>
           </div>
         </div>
@@ -260,9 +260,9 @@
 
     // Gameplay clips. Empty IDs leave their selector as a styled preview.
     const GAME_CLIPS = [
+      {title:'The Finals',videoId:'ZoZ9VJHRnNg',start:0,end:30},
       {title:'Predecessor',videoId:'5f6hqYt5SXA',start:30,end:40},
       {title:'Mario Kart',videoId:'_43cq3DalZw',start:0},
-      {title:'Super Smash Bros.',videoId:'',start:0},
       {title:'Just Dance',videoId:'w4fJEvOzIys',start:6}
     ];
     const tvScreen=document.getElementById('tv-screen');
