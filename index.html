@@ -46,6 +46,7 @@
     .tv-screen[data-game="0"]{--game-a:#343b7c;--game-b:#a16de5}
     .tv-screen[data-game="1"]{--game-a:#195e9c;--game-b:#e88a4f}
     .tv-screen[data-game="2"]{--game-a:#4e276b;--game-b:#f05f8f}
+    .tv-screen[data-game="3"]{--game-a:#982c83;--game-b:#24a1ba}
     .tv-placeholder{position:relative;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;isolation:isolate;overflow:hidden;background:radial-gradient(circle at 50% 32%,var(--game-b),var(--game-a) 55%,#0e1025)}
     .tv-placeholder:before{content:"";position:absolute;z-index:-1;left:-60%;right:-60%;top:45%;bottom:-65%;background-image:linear-gradient(#ffffff3d 1px,transparent 1px),linear-gradient(90deg,#ffffff3d 1px,transparent 1px);background-size:30px 30px;transform:perspective(200px) rotateX(58deg);animation:screenDrift 3s linear infinite}
     .tv-placeholder:after{content:"";position:absolute;z-index:-1;width:115px;height:115px;top:12%;left:calc(50% - 57px);border:8px solid #ffffff20;transform:rotate(45deg);animation:shapeSpin 18s linear infinite}
@@ -56,7 +57,7 @@
     .tv-video[hidden],.tv-placeholder[hidden]{display:none}
     .tv-bottom{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 7px 3px;color:#d8d3e6;font:900 .65rem monospace;letter-spacing:.15em}
     .tv-led{display:inline-block;width:11px;height:11px;border-radius:50%;background:var(--lime);box-shadow:0 0 12px var(--lime);animation:blink 2s steps(2,end) infinite}
-    .tv-controls{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:23px}
+    .tv-controls{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:23px}
     .tv-clip{min-width:0;padding:11px 7px;border:2px solid #867cae;background:#211e36;color:#c9c1df;font:900 .69rem "Courier New",monospace;letter-spacing:.015em;transition:background .2s,transform .2s}
     .tv-clip:hover{background:#3b345b;transform:translateY(-2px)}
     .tv-clip[aria-pressed="true"]{background:var(--pink);color:var(--ink);border-color:var(--ink);box-shadow:3px 3px 0 var(--lime)}
@@ -134,7 +135,7 @@
     @keyframes blink{0%,48%{opacity:1}50%,100%{opacity:.35}}
     @keyframes fall{to{transform:translateY(110vh) rotate(720deg);opacity:0}}
     @media(max-width:850px){.hero-grid{grid-template-columns:1fr;gap:48px}.hero{padding:66px 0 90px}.hero h1{font-size:clamp(3rem,9.8vw,5.4rem)}.tv{width:min(440px,92%)}.spec-grid{grid-template-columns:1fr 1fr}.nav{gap:14px}}
-    @media(max-width:600px){.wrap{width:min(100% - 32px,1120px)}.header-inner{min-height:68px}.brand{font-size:.82rem}.nav a:not(.nav-cta){display:none}.nav .nav-cta{font-size:.67rem;padding:8px}.hero h1{font-size:clamp(2.6rem,10.7vw,4.2rem)}.hero-text{font-size:.96rem}.tv{width:100%}.tv-frame{padding:10px;border-width:7px}.tv-screen{border-width:6px}.tv-clip{font-size:.58rem;padding:10px 4px}.mode-grid,.spec-grid,.fields{grid-template-columns:1fr}.section.section{padding:72px 0}.section-heading h2{font-size:2.4rem}.mode-card{padding:22px}.form-body{padding:18px}.form-title{padding:15px;font-size:.73rem}}
+    @media(max-width:600px){.wrap{width:min(100% - 32px,1120px)}.header-inner{min-height:68px}.brand{font-size:.82rem}.nav a:not(.nav-cta){display:none}.nav .nav-cta{font-size:.67rem;padding:8px}.hero h1{font-size:clamp(2.6rem,10.7vw,4.2rem)}.hero-text{font-size:.96rem}.tv{width:100%}.tv-frame{padding:10px;border-width:7px}.tv-screen{border-width:6px}.tv-controls{grid-template-columns:repeat(2,minmax(0,1fr))}.tv-clip{font-size:.68rem;padding:11px 7px}.mode-grid,.spec-grid,.fields{grid-template-columns:1fr}.section.section{padding:72px 0}.section-heading h2{font-size:2.4rem}.mode-card{padding:22px}.form-body{padding:18px}.form-title{padding:15px;font-size:.73rem}}
     @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
   </style>
 </head>
@@ -176,6 +177,7 @@
             <button type="button" class="tv-clip" data-clip="0" aria-pressed="true">Predecessor</button>
             <button type="button" class="tv-clip" data-clip="1" aria-pressed="false">Mario Kart</button>
             <button type="button" class="tv-clip" data-clip="2" aria-pressed="false">Smash Bros.</button>
+            <button type="button" class="tv-clip" data-clip="3" aria-pressed="false">Just Dance</button>
           </div>
         </div>
       </div>
@@ -260,7 +262,8 @@
     const GAME_CLIPS = [
       {title:'Predecessor',videoId:'5f6hqYt5SXA',start:30,end:40},
       {title:'Mario Kart',videoId:'_43cq3DalZw',start:0},
-      {title:'Super Smash Bros.',videoId:'',start:0}
+      {title:'Super Smash Bros.',videoId:'',start:0},
+      {title:'Just Dance',videoId:'w4fJEvOzIys',start:6}
     ];
     const tvScreen=document.getElementById('tv-screen');
     const tvPlaceholder=document.getElementById('tv-placeholder');
