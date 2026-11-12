@@ -385,8 +385,9 @@
               <div class="lobby-donut-wrap">
                 <div class="lobby-donut" id="lobby-donut"><div class="lobby-donut-inner"><strong id="lobby-donut-total">—</strong><span>CONFIRMED</span></div></div>
                 <div class="lobby-legend">
-                  <div><span class="legend-dot" style="background:#d1ff69"></span> Overnight LAN: <b id="lobby-overnight">—</b></div>
-                  <div><span class="legend-dot" style="background:#ff6f9a"></span> Birthday only: <b id="lobby-day">—</b></div>
+                  <div><span class="legend-dot" style="background:#ff6f9a"></span> Day only: <b id="lobby-day">—</b></div>
+                  <div><span class="legend-dot" style="background:#d1ff69"></span> Overnight only: <b id="lobby-overnight">—</b></div>
+                  <div><span class="legend-dot" style="background:#aa9bff"></span> Both: <b id="lobby-both">—</b></div>
                   <div><span class="legend-dot" style="background:#7fe2e4"></span> Undecided: <b id="lobby-unsure">—</b></div>
                 </div>
               </div>
@@ -532,6 +533,7 @@
       const overnight = Number(data.overnight || 0);
       const day = Number(data.day || 0);
       const unsure = Number(data.unsure || 0);
+      const both = Number(data.both || 0);
       ['confirmed','maybe','stealthed','overnight','day','unsure','pcs','consoles']
         .forEach(key => {
           document.getElementById('lobby-' + key).textContent = String(Number(data[key] || 0));
@@ -539,14 +541,21 @@
       // Existing guests' monitors and TVs are both counted as screens.
       document.getElementById('lobby-screens').textContent =
         String(Number(data.monitors || 0) + Number(data.tvs || 0));
+      document.getElementById('lobby-both').textContent = String(both);
       document.getElementById('lobby-donut-total').textContent = String(confirmed);
       const donut = document.getElementById('lobby-donut');
-      const all = overnight + day + unsure;
+      const all = day + overnight + both + unsure;
       if (all > 0) {
-        const first = overnight / all * 100;
-        const second = (overnight + day) / all * 100;
-        donut.style.background = 'conic-gradient(#d1ff69 0% ' + first + '%, #ff6f9a ' +
-          first + '% ' + second + '%, #7fe2e4 ' + second + '% 100%)';
+        let start = 0;
+        const segments = [];
+        [[day,'#ff6f9a'],[overnight,'#d1ff69'],[both,'#aa9bff'],[unsure,'#7fe2e4']]
+          .forEach(([count,color]) => {
+            if (!count) return;
+            const end = start + count / all * 100;
+            segments.push(color + ' ' + start + '% ' + end + '%');
+            start = end;
+          });
+        donut.style.background = 'conic-gradient(' + segments.join(', ') + ')';
       } else {
         donut.style.background = '#403958';
       }
@@ -601,10 +610,15 @@
       try {
         let data;
         try {
-          data = await bdayRpc('bday_lobby_v2', {});
+          data = await bdayRpc('bday_lobby_v3', {});
         } catch (error) {
           if (error.status !== 404) throw error;
-          data = await bdayRpc('bday_lobby', {});
+          try {
+            data = await bdayRpc('bday_lobby_v2', {});
+          } catch (olderError) {
+            if (olderError.status !== 404) throw olderError;
+            data = await bdayRpc('bday_lobby', {});
+          }
         }
         renderLobby(data);
         status.classList.remove('offline');
@@ -735,16 +749,12 @@
         submitButton.textContent = 'SAVING...';
         try {
           const attendance = {"Yes, I'm in!":'yes', 'Maybe / not sure yet':'maybe', "Sadly can't make it":'no'};
-          const modes = {
-            'Full weekend: overnight LAN + birthday':'overnight',
-            'Birthday hangout only':'day',
-            'Undecided':'unsure'
-          };
+          const chosenMode = String(data.get('mode') || 'unsure');
           const payload = {
             p_ticket: getGuestTicket(),
             p_name: String(data.get('name')).trim(),
             p_attendance: attendance[data.get('attendance')],
-            p_mode: modes[data.get('mode')],
+            p_mode: chosenMode,
             p_is_anonymous: anonymous,
             p_pcs: Number(data.get('pcs')),
             p_consoles: Number(data.get('consoles')),
@@ -754,18 +764,36 @@
             p_tvs: 0,
             p_games: games
           };
+          const v3Details = {
+            ...payload,
+            p_notes: notes,
+            p_console_types: consoleTypes,
+            p_other_console: String(data.get('otherConsole') || '').trim()
+          };
           try {
-            await bdayRpc('bday_submit_v2', {
-              ...payload,
-              p_notes: notes,
-              p_console_types: consoleTypes,
-              p_other_console: String(data.get('otherConsole') || '').trim()
-            });
+            await bdayRpc('bday_submit_v3', v3Details);
           } catch (error) {
             if (error.status !== 404) throw error;
-            // Backward-compatible until the new SQL script has been run.
-            // Keep the console information in private notes as before.
-            await bdayRpc('bday_submit', {...payload, p_notes: savedNotes});
+            // Until the new SQL migration runs, preserve Both in private notes
+            // and submit as overnight to older functions so saving still works.
+            const fallbackMode = chosenMode === 'both' ? 'overnight' : chosenMode;
+            const modeNote = chosenMode === 'both' ? 'Chosen parts: Both daytime + overnight' : '';
+            const fallbackNotes = [modeNote, notes].filter(Boolean).join('\n\n');
+            const basicNotes = [modeNote, savedNotes].filter(Boolean).join('\n\n');
+            try {
+              await bdayRpc('bday_submit_v2', {
+                ...v3Details,
+                p_mode: fallbackMode,
+                p_notes: fallbackNotes
+              });
+            } catch (olderError) {
+              if (olderError.status !== 404) throw olderError;
+              await bdayRpc('bday_submit', {
+                ...payload,
+                p_mode: fallbackMode,
+                p_notes: basicNotes.slice(0,500)
+              });
+            }
           }
           resultTitle.textContent = '✓ RSVP SAVED!';
           resultInfo.textContent = 'Your response is saved. This message is an optional copy for your records.';
