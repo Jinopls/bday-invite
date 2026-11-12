@@ -595,6 +595,31 @@
     }
 
 
+
+    // Show console model options only when at least one console is being brought.
+    const consoleQuantity = document.getElementById('gear-consoles');
+    const consolePicker = document.getElementById('console-picker');
+    const consoleChoices = [...document.querySelectorAll('input[name="consoleTypes"]')];
+    const consoleOther = document.getElementById('console-other');
+    const consoleOtherWrap = document.getElementById('console-other-wrap');
+
+    function syncConsolePicker() {
+      const hasConsoles = Number(consoleQuantity.value) > 0;
+      consolePicker.hidden = !hasConsoles;
+      for (const choice of consoleChoices) {
+        choice.disabled = !hasConsoles;
+        if (!hasConsoles) choice.checked = false;
+      }
+      const otherChosen = hasConsoles && consoleChoices.some(choice => choice.value === 'Other' && choice.checked);
+      consoleOtherWrap.hidden = !otherChosen;
+      consoleOther.disabled = !otherChosen;
+      consoleOther.required = otherChosen;
+      if (!otherChosen) consoleOther.value = '';
+    }
+    consoleQuantity.addEventListener('input', syncConsolePicker);
+    consoleChoices.forEach(choice => choice.addEventListener('change', syncConsolePicker));
+    syncConsolePicker();
+
     let currentMessage = '';
     const statusText = document.getElementById('rsvp-status');
     const resultTitle = document.getElementById('result-title');
@@ -623,6 +648,35 @@
       const data = new FormData(form);
       const games = data.getAll('games');
       const anonymous = data.has('stay-anonymous');
+      const consoleCount = Number(data.get('consoles'));
+      const consoleTypes = data.getAll('consoleTypes');
+      if (consoleCount > 0 && consoleTypes.length === 0) {
+        statusText.classList.add('error');
+        statusText.textContent = 'Please select the type of console you are bringing.';
+        consolePicker.scrollIntoView({behavior:'smooth', block:'center'});
+        return;
+      }
+      if (consoleTypes.length > consoleCount) {
+        statusText.classList.add('error');
+        statusText.textContent = 'You selected more console types than consoles. Check the quantities.';
+        consolePicker.scrollIntoView({behavior:'smooth', block:'center'});
+        return;
+      }
+      const selectedConsoles = consoleTypes.map(model =>
+        model === 'Other' ? 'Other: ' + String(data.get('otherConsole') || '').trim() : model
+      );
+      const notes = String(data.get('notes') || '').trim();
+      // The current Supabase table stores this information in private notes
+      // so the existing, working database does not need a schema migration.
+      const savedNotes = [
+        selectedConsoles.length ? 'Console types: ' + selectedConsoles.join(', ') : '',
+        notes
+      ].filter(Boolean).join('\n\n');
+      if (savedNotes.length > 500) {
+        statusText.classList.add('error');
+        statusText.textContent = 'Please shorten your notes slightly to fit the console details.';
+        return;
+      }
       const equipment = ['pcs','consoles','monitors','tvs']
         .map(type => type.toUpperCase() + ': ' + data.get(type)).join(' · ');
       currentMessage = [
@@ -633,8 +687,9 @@
         'Attendance: ' + data.get('attendance'),
         'Coming for: ' + data.get('mode'),
         'Equipment: ' + equipment,
+        'Console types: ' + (selectedConsoles.length ? selectedConsoles.join(', ') : 'None'),
         'Games: ' + (games.length ? games.join(', ') : 'No preference'),
-        'Private notes: ' + (String(data.get('notes') || '').trim() || 'None'),
+        'Private notes: ' + (notes || 'None'),
         '',
         'Sent from Bday & Games.'
       ].join('\n');
@@ -666,7 +721,7 @@
             p_monitors: Number(data.get('monitors')),
             p_tvs: Number(data.get('tvs')),
             p_games: games,
-            p_notes: String(data.get('notes') || '').trim()
+            p_notes: savedNotes
           });
           resultTitle.textContent = '✓ RSVP SAVED!';
           resultInfo.textContent = 'Your response is saved. This message is an optional copy for your records.';
