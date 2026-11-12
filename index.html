@@ -136,6 +136,54 @@
     .result-actions button{border:2px solid var(--ink);background:var(--night);color:#fff;font:900 .76rem monospace;padding:11px 14px}
     .result-actions button:last-child{background:var(--lime);color:var(--ink)}
     .form-note{font-size:.75rem;color:#746f84;margin-top:17px}
+
+    .stealth-choice{display:flex;align-items:flex-start;gap:11px;margin-top:4px;background:#e4e7e1;border:2px solid #b4b9b3;padding:11px;cursor:pointer}
+    .stealth-choice input{width:20px;height:20px;min-height:0;margin:1px 0 0;accent-color:#4b3e7d;flex:none}
+    .stealth-choice span{display:flex;flex-direction:column;gap:3px}
+    .stealth-choice strong{font:900 .76rem "Courier New",monospace}
+    .stealth-choice small{font-size:.75rem;color:#5f596f;line-height:1.4}
+    .gear-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:11px;margin-top:6px}
+    .gear-field{padding:11px 8px;background:#eeeaf4;border:2px solid #c6bcd3;text-align:center}
+    .gear-field label{display:block;min-height:35px;font:900 .76rem "Courier New",monospace}
+    .gear-field input{width:100%;min-height:42px;text-align:center;font-weight:900;font-family:"Courier New",monospace;background:white}
+    .gear-helper{color:#666073;font-size:.79rem;margin:1px 0 6px}
+    .rsvp-status{margin:12px 0 0;color:#494361;font-size:.85rem;min-height:1.3em}
+    .rsvp-status.error{color:#a22c4d;font-weight:700}
+    .rsvp-button:disabled{opacity:.55;cursor:wait}
+    .lobby{background:radial-gradient(circle at 10% 15%,#4f41764e,transparent 38%),#151328}
+    .lobby .section-heading p{max-width:630px}
+    .lobby-shell{border:3px solid #8575bc;background:#211d38;box-shadow:9px 9px 0 #090715;padding:28px}
+    .lobby-connection{color:var(--lime);font:900 .74rem "Courier New",monospace;letter-spacing:.055em;margin-bottom:19px}
+    .lobby-connection.offline{color:#e5be89}
+    .lobby-scoreboard{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:25px}
+    .lobby-score{display:flex;flex-direction:column;justify-content:center;align-items:center;background:#30294c;border:2px solid #625783;min-height:104px;padding:10px;text-align:center}
+    .lobby-score strong{font:900 clamp(2rem,5vw,3.2rem) "Courier New",monospace;color:var(--lime);line-height:1.1}
+    .lobby-score:nth-child(2) strong{color:var(--pink)}
+    .lobby-score:nth-child(3) strong{color:var(--cyan)}
+    .lobby-score span{font:900 .68rem "Courier New",monospace;letter-spacing:.08em;margin-top:8px}
+    .lobby-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+    .lobby-panel{padding:21px;background:#2b2645;border:2px solid #595078;min-width:0}
+    .lobby-panel h3{font:900 1.05rem "Courier New",monospace;margin:0 0 17px;letter-spacing:.04em}
+    .lobby-donut-wrap{display:flex;align-items:center;gap:18px}
+    .lobby-donut{width:148px;aspect-ratio:1;border-radius:50%;background:#403958;display:grid;place-items:center;flex:none;transition:background .5s}
+    .lobby-donut-inner{width:72%;height:72%;border-radius:50%;background:#27223f;display:flex;flex-direction:column;justify-content:center;align-items:center}
+    .lobby-donut-inner strong{font:900 2.3rem/1 "Courier New",monospace;color:var(--paper)}
+    .lobby-donut-inner span{font:900 .61rem "Courier New",monospace;color:#aaa1cb;text-align:center}
+    .lobby-legend{display:grid;gap:10px;font-size:.8rem}
+    .legend-dot{display:inline-block;width:10px;height:10px;margin-right:7px}
+    .lobby-help{font-size:.77rem;color:#b6accf;margin-top:14px}
+    .lobby-equipment{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:11px}
+    .lobby-equipment div{text-align:center;background:#1d1935;border:1px solid #605780;padding:13px 5px}
+    .lobby-equipment strong{display:block;font:900 1.7rem "Courier New",monospace;color:var(--lime)}
+    .lobby-equipment span{font:900 .65rem "Courier New",monospace;color:#d9d1ee}
+    .lobby-roster{display:flex;flex-wrap:wrap;gap:9px;align-items:flex-start;min-height:40px}
+    .player-tag{border:2px solid #796ba2;background:#19162d;color:#ecddff;padding:7px 10px;font:900 .76rem "Courier New",monospace;overflow-wrap:anywhere;max-width:100%}
+    .lobby-empty{font-size:.84rem;color:#aba2c3;margin:0}
+    .game-vote{display:grid;grid-template-columns:100px 1fr 28px;gap:8px;align-items:center;margin:11px 0;font-size:.74rem;font-weight:700}
+    .game-vote-track{height:13px;background:#161329;border:1px solid #625783;overflow:hidden}
+    .game-vote-fill{height:100%;background:var(--pink);min-width:0;transition:width .4s}
+    @media(max-width:700px){.lobby-grid{grid-template-columns:1fr}.lobby-shell{padding:17px}.lobby-donut{width:132px}}
+    @media(max-width:430px){.gear-grid,.lobby-equipment{grid-template-columns:repeat(2,minmax(0,1fr))}.lobby-score span{font-size:.58rem}.lobby-donut{width:120px}.lobby-donut-wrap{gap:12px}}
     .footer{padding:45px 0;text-align:center;background:#0d0c17;color:#b9b1cd}
     .footer .pixel{color:var(--lime);font-size:1.1rem;margin-bottom:8px}
     .footer small{font-size:.76rem}
@@ -259,25 +307,34 @@
         <div class="form-shell">
           <div class="form-title"><span>▣ RSVP FORM</span><span>STATUS: OPEN</span></div>
           <div class="form-body">
-            <p class="form-intro">This form makes a message you can send me. It doesn't magically deliver your answer, so please actually send it.</p>
+            <p class="form-intro" id="form-intro">For now, the form generates a message to send me. Automatic saving will switch on after I connect the database.</p>
             <form id="rsvp-form">
               <div class="fields">
-                <div class="field"><label for="guest-name">IN-GAME NAME *</label><input id="guest-name" name="name" type="text" autocomplete="nickname" maxlength="90" placeholder="Your in-game name" required></div>
+                <div class="field"><label for="guest-name">IN-GAME NAME *</label><input id="guest-name" name="name" type="text" autocomplete="nickname" maxlength="90" placeholder="Your in-game name" required>
+                  <label class="stealth-choice" for="stay-anonymous"><input type="checkbox" id="stay-anonymous" name="stay-anonymous" checked><span><strong>🥷 STAY ANONYMOUS</strong><small>Checked by default. You'll count as a stealthed player instead of appearing by name in the public lobby.</small></span></label>
+                </div>
                 <div class="field"><label for="attendance">ARE YOU COMING? *</label><select id="attendance" name="attendance" required><option value="Yes, I'm in!">Yes, I'm in!</option><option value="Maybe / not sure yet">Maybe / not sure yet</option><option value="Sadly can't make it">Sadly can't make it</option></select></div>
                 <div class="field"><label for="mode-select">WHICH PART?</label><select id="mode-select" name="mode"><option value="Undecided">Not sure yet</option><option value="Full weekend: overnight LAN + birthday">Overnight LAN + birthday</option><option value="Birthday hangout only">Birthday only</option></select></div>
-                <div class="field"><label for="setup-select">BRINGING A SETUP?</label><select id="setup-select" name="setup"><option value="No gaming setup">No gaming setup</option><option value="PC">PC</option><option value="Console">Console</option><option value="PC and console">PC + console</option><option value="Not sure">Not sure yet</option></select></div>
+                <div class="field full"><label>YOUR GEAR (QUANTITY)</label><p class="gear-helper">How many of each are you bringing? Leave at 0 if none.</p>
+                  <div class="gear-grid">
+                    <div class="gear-field"><label for="gear-pcs">🖥️ PCs</label><input id="gear-pcs" name="pcs" type="number" min="0" max="8" step="1" value="0" required></div>
+                    <div class="gear-field"><label for="gear-consoles">🎮 Consoles</label><input id="gear-consoles" name="consoles" type="number" min="0" max="8" step="1" value="0" required></div>
+                    <div class="gear-field"><label for="gear-monitors">🖥️ Monitors</label><input id="gear-monitors" name="monitors" type="number" min="0" max="8" step="1" value="0" required></div>
+                    <div class="gear-field"><label for="gear-tvs">📺 TVs</label><input id="gear-tvs" name="tvs" type="number" min="0" max="8" step="1" value="0" required></div>
+                  </div>
+                </div>
                 <div class="field full"><label>WHAT WOULD YOU PLAY? (OPTIONAL)</label><div class="choice-row" role="group" aria-label="Game preferences"><label class="choice"><input type="checkbox" name="games" value="Co-op"> Co-op</label><label class="choice"><input type="checkbox" name="games" value="Party games"> Party games</label><label class="choice"><input type="checkbox" name="games" value="Competitive"> Competitive</label><label class="choice"><input type="checkbox" name="games" value="Retro classics"> Retro classics</label><label class="choice"><input type="checkbox" name="games" value="Anything!"> Anything!</label></div></div>
                 <div class="field full"><label for="notes">ANYTHING I SHOULD KNOW? (OPTIONAL)</label><textarea id="notes" name="notes" maxlength="500" placeholder="Dietary needs, sleeping arrangements, game suggestions, +1, questions..."></textarea></div>
               </div>
-              <button class="primary-btn rsvp-button" type="submit">▶ Generate my RSVP</button>
+              <button class="primary-btn rsvp-button" id="rsvp-submit-button" type="submit">▶ Generate my RSVP</button><p id="rsvp-status" class="rsvp-status" role="status"></p>
             </form>
             <div id="result" class="result" aria-live="polite">
-              <h3>✓ MESSAGE READY</h3>
-              <p>It hasn't been sent yet. Copy it and send it to me, or use your phone's share menu.</p>
+              <h3 id="result-title">✓ MESSAGE READY</h3>
+              <p id="result-info">It hasn't been sent yet. Copy it and send it to me, or use your phone's share menu.</p>
               <pre id="rsvp-message"></pre>
               <div class="result-actions"><button id="copy-button" type="button">📋 COPY MESSAGE</button><button id="share-button" type="button">↗ SHARE MESSAGE</button></div>
             </div>
-            <p class="form-note">Privacy tip: don't put your personal phone number or home address directly on a public website. RSVP messages only contain what you choose to enter.</p>
+            <p class="form-note">Privacy: Private notes are never shown in the public lobby. Only confirmed guests who untick “Stay anonymous” can have their in-game name displayed.</p>
           </div>
         </div>
       </div>
