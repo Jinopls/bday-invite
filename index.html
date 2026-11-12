@@ -180,6 +180,12 @@
     .lobby-legend{display:grid;gap:10px;font-size:.8rem}
     .legend-dot{display:inline-block;width:10px;height:10px;margin-right:7px}
     .lobby-help{font-size:.77rem;color:#b6accf;margin-top:14px}
+    .sidequest-summary{margin-top:18px;padding-top:17px;border-top:1px dashed #756a93}
+    .sidequest-summary h4{font:900 .8rem "Courier New",monospace;letter-spacing:.04em;color:var(--cyan);margin:0 0 10px}
+    .sidequest-counts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+    .sidequest-counts div{background:#1d1935;border:1px solid #605780;padding:9px;text-align:center}
+    .sidequest-counts strong{display:block;color:var(--lime);font:900 1.65rem "Courier New",monospace}
+    .sidequest-counts span{display:block;font:900 .68rem "Courier New",monospace;color:#d9d1ee}
     .lobby-equipment{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px}
     .lobby-equipment div{text-align:center;background:#1d1935;border:1px solid #605780;padding:13px 5px}
     .lobby-equipment strong{display:block;font:900 1.7rem "Courier New",monospace;color:var(--lime)}
@@ -298,7 +304,7 @@
           <div class="spec"><div class="spec-number">[01] WHEN</div><h3>THE DATE</h3><div class="large" id="date-label">9–10 JAN 2027</div><p>Sat 9 Jan, 16:00 – Sun 10 Jan, 23:00.</p></div>
           <div class="spec"><div class="spec-number">[02] WHERE</div><h3>THE LOCATION</h3><div class="large" id="venue-label">NIJMEGEN</div><p>Venue TBA. Exact address will be shared with guests.</p></div>
           <div class="spec"><div class="spec-number">[03] WHAT</div><h3>THE PLAN</h3><div class="large">GAMES & FOOD</div><p>Some games, some hanging out, and probably more snacks than anyone needs.</p></div>
-          <div class="spec"><div class="spec-number">[04] SIDEQUEST</div><h3>SIDEQUEST</h3><div class="large">BONUS HANGOUT</div><p>Not staying overnight or not into gaming all night? My girlfriend has another hangout quest planned.</p></div>
+          <div class="spec"><div class="spec-number">[04] SIDEQUEST</div><h3>SIDEQUEST</h3><div class="large">BONUS HANGOUT</div><p>Skipping the all-nighter? My girlfriend is planning another hangout after the birthday. Interested? Let us know in your RSVP!</p></div>
         </div>
         <details class="packing-toggle" id="packing-list" hidden>
           <summary>LAN packing list</summary>
@@ -326,6 +332,7 @@
                 </div>
                 <div class="field"><label for="attendance">ARE YOU COMING? *</label><select id="attendance" name="attendance" required><option value="Yes, I'm in!">Yes, I'm in!</option><option value="Maybe / not sure yet">Maybe / not sure yet</option><option value="Sadly can't make it">Sadly can't make it</option></select></div>
                 <div class="field"><label for="mode-select">WHICH PART?</label><select id="mode-select" name="mode"><option value="unsure">Not sure yet</option><option value="day">Daytime birthday only</option><option value="overnight">Overnight LAN only</option><option value="both">Both daytime + overnight</option></select></div>
+                <div class="field"><label for="sidequest-select">SIDEQUEST AFTER THE BIRTHDAY?</label><select id="sidequest-select" name="sidequest"><option value="no">No thanks</option><option value="maybe">Maybe, keep me posted</option><option value="yes">Yes, I'm interested!</option></select><p class="gear-helper">An alternative hangout with my girlfriend instead of the overnight LAN. Just checking interest for planning.</p></div>
                 <div class="field full"><label>YOUR GEAR</label><p class="gear-helper">What are you bringing? Choose None or 1–3 for each item. Selecting consoles also lets you choose the model.</p>
                   <div class="gear-grid">
                     <div class="gear-field"><label for="gear-pcs">🖥️ PCs</label><select id="gear-pcs" name="pcs" required><option value="0" selected>None</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></div>
@@ -393,6 +400,14 @@
                 </div>
               </div>
               <p class="lobby-help">Mode split of confirmed guests only.</p>
+              <div class="sidequest-summary">
+                <h4>✦ SIDEQUEST INTEREST</h4>
+                <div class="sidequest-counts">
+                  <div><strong id="sidequest-yes">—</strong><span>INTERESTED</span></div>
+                  <div><strong id="sidequest-maybe">—</strong><span>MAYBE</span></div>
+                </div>
+                <p class="lobby-help" id="sidequest-help">Counts of confirmed guests. Available after the Sidequest database upgrade.</p>
+              </div>
             </div>
             <div class="lobby-panel">
               <h3>▣ EQUIPMENT LOADOUT</h3>
@@ -543,6 +558,12 @@
       document.getElementById('lobby-screens').textContent =
         String(Number(data.monitors || 0) + Number(data.tvs || 0));
       document.getElementById('lobby-both').textContent = String(both);
+      const hasSidequestStats = data.sidequest_yes != null && data.sidequest_maybe != null;
+      document.getElementById('sidequest-yes').textContent = hasSidequestStats ? String(Number(data.sidequest_yes || 0)) : '—';
+      document.getElementById('sidequest-maybe').textContent = hasSidequestStats ? String(Number(data.sidequest_maybe || 0)) : '—';
+      document.getElementById('sidequest-help').textContent = hasSidequestStats
+        ? 'Confirmed guests only · planning interest, not a final booking.'
+        : 'Sidequest counts activate after the database upgrade.';
       document.getElementById('lobby-donut-total').textContent = String(confirmed);
       const donut = document.getElementById('lobby-donut');
       const all = day + overnight + both + unsure;
@@ -611,14 +632,19 @@
       try {
         let data;
         try {
-          data = await bdayRpc('bday_lobby_v3', {});
-        } catch (error) {
-          if (error.status !== 404) throw error;
+          data = await bdayRpc('bday_lobby_v4', {});
+        } catch (latestError) {
+          if (latestError.status !== 404) throw latestError;
           try {
-            data = await bdayRpc('bday_lobby_v2', {});
-          } catch (olderError) {
-            if (olderError.status !== 404) throw olderError;
-            data = await bdayRpc('bday_lobby', {});
+            data = await bdayRpc('bday_lobby_v3', {});
+          } catch (error) {
+            if (error.status !== 404) throw error;
+            try {
+              data = await bdayRpc('bday_lobby_v2', {});
+            } catch (olderError) {
+              if (olderError.status !== 404) throw olderError;
+              data = await bdayRpc('bday_lobby', {});
+            }
           }
         }
         renderLobby(data);
@@ -694,6 +720,9 @@
       // Keep the existing Supabase RPC signature; the game-voting question is removed.
       const games = [];
       const anonymous = data.has('stay-anonymous');
+      const sidequestInterest = String(data.get('sidequest') || 'no');
+      const sidequestNote = sidequestInterest === 'yes' ? 'Sidequest: Interested'
+        : sidequestInterest === 'maybe' ? 'Sidequest: Maybe' : '';
       const consoleCount = Number(data.get('consoles'));
       const consoleTypes = data.getAll('consoleTypes');
       if (consoleCount > 0 && consoleTypes.length === 0) {
@@ -732,6 +761,7 @@
         'Public name: ' + (anonymous ? 'No — stay stealthed' : 'Yes — show in public RSVP stats'),
         'Attendance: ' + data.get('attendance'),
         'Coming for: ' + data.get('mode'),
+        'Sidequest: ' + (sidequestInterest === 'yes' ? 'Interested' : sidequestInterest === 'maybe' ? 'Maybe' : 'No thanks'),
         'Equipment: ' + equipment,
         'Console types: ' + (selectedConsoles.length ? selectedConsoles.join(', ') : 'None'),
         'Private notes: ' + (notes || 'None'),
@@ -772,28 +802,32 @@
             p_other_console: String(data.get('otherConsole') || '').trim()
           };
           try {
-            await bdayRpc('bday_submit_v3', v3Details);
-          } catch (error) {
-            if (error.status !== 404) throw error;
-            // Until the new SQL migration runs, preserve Both in private notes
-            // and submit as overnight to older functions so saving still works.
-            const fallbackMode = chosenMode === 'both' ? 'overnight' : chosenMode;
+            await bdayRpc('bday_submit_v4', {
+              ...v3Details,
+              p_sidequest_interest: sidequestInterest
+            });
+          } catch (newError) {
+            if (newError.status !== 404) throw newError;
+            // Keep Sidequest interest in private notes until the V4 upgrade is run.
+            const v3Notes = [sidequestNote, notes].filter(Boolean).join('\n\n');
+            const oldMode = chosenMode === 'both' ? 'overnight' : chosenMode;
             const modeNote = chosenMode === 'both' ? 'Chosen parts: Both daytime + overnight' : '';
-            const fallbackNotes = [modeNote, notes].filter(Boolean).join('\n\n');
-            const basicNotes = [modeNote, savedNotes].filter(Boolean).join('\n\n');
+            const olderNotes = [modeNote, sidequestNote, notes].filter(Boolean).join('\n\n');
+            const basicNotes = [modeNote, sidequestNote, savedNotes].filter(Boolean).join('\n\n');
             try {
-              await bdayRpc('bday_submit_v2', {
-                ...v3Details,
-                p_mode: fallbackMode,
-                p_notes: fallbackNotes
-              });
-            } catch (olderError) {
-              if (olderError.status !== 404) throw olderError;
-              await bdayRpc('bday_submit', {
-                ...payload,
-                p_mode: fallbackMode,
-                p_notes: basicNotes.slice(0,500)
-              });
+              await bdayRpc('bday_submit_v3', {...v3Details, p_notes: v3Notes});
+            } catch (error) {
+              if (error.status !== 404) throw error;
+              try {
+                await bdayRpc('bday_submit_v2', {
+                  ...v3Details, p_mode: oldMode, p_notes: olderNotes
+                });
+              } catch (olderError) {
+                if (olderError.status !== 404) throw olderError;
+                await bdayRpc('bday_submit', {
+                  ...payload, p_mode: oldMode, p_notes: basicNotes.slice(0,500)
+                });
+              }
             }
           }
           resultTitle.textContent = '✓ RSVP SAVED!';
