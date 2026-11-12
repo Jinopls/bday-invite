@@ -53,6 +53,10 @@ You may also give the project URL and **publishable-only** key to ChatGPT to con
 
 In Supabase Table Editor, export the `bday_rsvps` table as CSV. Open that CSV in LibreOffice Calc. The CSV is a downloadable snapshot, not a continuously synchronized .ods file.
 
+## Free-tier availability
+
+Supabase Free projects can pause after about a week of low database activity. Before sending invitations and before the event, check your Supabase dashboard and resume the project if necessary. Supabase emails the project owner when a project is paused. A paused project cannot accept RSVPs until resumed. The website will show a connection error rather than pretending it saved a submission.
+
 ## Maintenance
 
 - Guests returning on the **same browser** update their previous RSVP. Guests using another browser/device may create an additional entry.
