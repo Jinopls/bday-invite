@@ -339,6 +339,58 @@
         </div>
       </div>
     </section>
+
+    <section class="section lobby grid-bg" id="lobby" aria-labelledby="lobby-title">
+      <div class="wrap">
+        <div class="section-heading">
+          <div class="eyebrow">04 / MULTIPLAYER</div>
+          <h2 id="lobby-title">PLAYER LOBBY</h2>
+          <p>Real RSVP stats, not random made-up players. Only confirmed guests count toward equipment totals. Your gamer tag appears only if you choose to be visible.</p>
+        </div>
+        <div class="lobby-shell">
+          <div class="lobby-connection offline" id="lobby-connection" role="status">● LOBBY NOT CONNECTED YET — LIVE STATS COMING SOON</div>
+          <div class="lobby-scoreboard">
+            <div class="lobby-score"><strong id="lobby-confirmed">—</strong><span>CONFIRMED</span></div>
+            <div class="lobby-score"><strong id="lobby-maybe">—</strong><span>MAYBE</span></div>
+            <div class="lobby-score"><strong id="lobby-stealthed">—</strong><span>PLAYERS STEALTHED</span></div>
+          </div>
+          <div class="lobby-grid">
+            <div class="lobby-panel">
+              <h3>◉ GAME MODE SELECT</h3>
+              <div class="lobby-donut-wrap">
+                <div class="lobby-donut" id="lobby-donut"><div class="lobby-donut-inner"><strong id="lobby-donut-total">—</strong><span>CONFIRMED</span></div></div>
+                <div class="lobby-legend">
+                  <div><span class="legend-dot" style="background:#d1ff69"></span> Overnight LAN: <b id="lobby-overnight">—</b></div>
+                  <div><span class="legend-dot" style="background:#ff6f9a"></span> Birthday only: <b id="lobby-day">—</b></div>
+                  <div><span class="legend-dot" style="background:#7fe2e4"></span> Undecided: <b id="lobby-unsure">—</b></div>
+                </div>
+              </div>
+              <p class="lobby-help">Mode split of confirmed guests only.</p>
+            </div>
+            <div class="lobby-panel">
+              <h3>▣ EQUIPMENT LOADOUT</h3>
+              <div class="lobby-equipment">
+                <div><strong id="lobby-pcs">—</strong><span>🖥️ PCs</span></div>
+                <div><strong id="lobby-consoles">—</strong><span>🎮 CONSOLES</span></div>
+                <div><strong id="lobby-monitors">—</strong><span>🖥️ MONITORS</span></div>
+                <div><strong id="lobby-tvs">—</strong><span>📺 TVs</span></div>
+              </div>
+              <p class="lobby-help">Numbers come from confirmed guests bringing their own equipment.</p>
+            </div>
+            <div class="lobby-panel">
+              <h3>▤ PLAYER ROSTER</h3>
+              <div class="lobby-roster" id="lobby-roster" aria-live="polite"><p class="lobby-empty">Waiting for the lobby to connect.</p></div>
+              <p class="lobby-help">Only players who untick “Stay anonymous” appear here.</p>
+            </div>
+            <div class="lobby-panel">
+              <h3>▦ GAME VOTES</h3>
+              <div id="lobby-games"><p class="lobby-empty">No live votes yet.</p></div>
+              <p class="lobby-help">A guest can vote for several game types.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
   </main>
   <footer class="footer"><div class="wrap"><div class="pixel">SAVE OFTEN. SLEEP EVENTUALLY.</div><small>Bring your own cables · ↑ ↑ ↓ ↓ ← → ← → B A</small></div></footer>
   <div class="toast" id="toast" role="status"></div><div class="confetti" id="confetti" aria-hidden="true"></div>
