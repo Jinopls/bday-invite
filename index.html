@@ -179,6 +179,10 @@
     .lobby-equipment div{text-align:center;background:#1d1935;border:1px solid #605780;padding:13px 5px}
     .lobby-equipment strong{display:block;font:900 1.7rem "Courier New",monospace;color:var(--lime)}
     .lobby-equipment span{font:900 .65rem "Courier New",monospace;color:#d9d1ee}
+
+    .console-breakdown{display:flex;gap:7px;flex-wrap:wrap;margin-top:15px}
+    .console-breakdown .console-badge{display:inline-flex;align-items:center;gap:7px;background:#19172d;border:1px solid #8779ac;border-left:3px solid var(--cyan);padding:7px 9px;color:#e7e1f4;font:800 .7rem "Courier New",monospace}
+    .console-breakdown .console-badge strong{color:var(--lime)}
     .lobby-roster{display:flex;flex-wrap:wrap;gap:9px;align-items:flex-start;min-height:40px}
     .player-tag{border:2px solid #796ba2;background:#19162d;color:#ecddff;padding:7px 10px;font:900 .76rem "Courier New",monospace;overflow-wrap:anywhere;max-width:100%}
     .lobby-empty{font-size:.84rem;color:#aba2c3;margin:0}
@@ -395,7 +399,9 @@
                 <div><strong id="lobby-monitors">—</strong><span>🖥️ MONITORS</span></div>
                 <div><strong id="lobby-tvs">—</strong><span>📺 TVs</span></div>
               </div>
-              <p class="lobby-help">Numbers come from confirmed guests bringing their own equipment.</p>
+              <p class="lobby-help">Equipment totals from confirmed guests only.</p>
+              <p class="lobby-help"><strong>Console types</strong> — confirmed guests bringing each model:</p>
+              <div id="lobby-console-types" class="console-breakdown" aria-live="polite"><span class="lobby-empty">Loading console types...</span></div>
             </div>
             <div class="lobby-panel">
               <h3>▤ PLAYER ROSTER</h3>
@@ -501,8 +507,12 @@
         cache: 'no-store',
         body: JSON.stringify(payload)
       });
-      if (!response.ok) throw new Error('RSVP server error (' + response.status + ')');
-      if (functionName === 'bday_lobby') return response.json();
+      if (!response.ok) {
+        const error = new Error('RSVP server error (' + response.status + ')');
+        error.status = response.status;
+        throw error;
+      }
+      if (functionName.startsWith('bday_lobby')) return response.json();
     }
 
     function renderLobby(data) {
@@ -524,6 +534,32 @@
           first + '% ' + second + '%, #7fe2e4 ' + second + '% 100%)';
       } else {
         donut.style.background = '#403958';
+      }
+
+
+      const breakdown = document.getElementById('lobby-console-types');
+      breakdown.replaceChildren();
+      if (!Array.isArray(data.console_breakdown)) {
+        const message = document.createElement('span');
+        message.className = 'lobby-empty';
+        message.textContent = 'Console model stats available after the database upgrade.';
+        breakdown.appendChild(message);
+      } else if (!data.console_breakdown.length) {
+        const message = document.createElement('span');
+        message.className = 'lobby-empty';
+        message.textContent = 'No console models reported yet.';
+        breakdown.appendChild(message);
+      } else {
+        data.console_breakdown.forEach(item => {
+          const badge = document.createElement('span');
+          badge.className = 'console-badge';
+          const label = document.createElement('span');
+          label.textContent = String(item.name || '');
+          const qty = document.createElement('strong');
+          qty.textContent = String(Number(item.players || 0));
+          badge.append(label, qty);
+          breakdown.appendChild(badge);
+        });
       }
 
       const roster = document.getElementById('lobby-roster');
@@ -575,7 +611,13 @@
       if (!LIVE_RSVP) return;
       const status = document.getElementById('lobby-connection');
       try {
-        const data = await bdayRpc('bday_lobby', {});
+        let data;
+        try {
+          data = await bdayRpc('bday_lobby_v2', {});
+        } catch (error) {
+          if (error.status !== 404) throw error;
+          data = await bdayRpc('bday_lobby', {});
+        }
         renderLobby(data);
         status.classList.remove('offline');
         status.textContent = '● SERVER ONLINE — RSVP LIVE STATS';
@@ -710,7 +752,7 @@
             'Birthday hangout only':'day',
             'Undecided':'unsure'
           };
-          await bdayRpc('bday_submit', {
+          const payload = {
             p_ticket: getGuestTicket(),
             p_name: String(data.get('name')).trim(),
             p_attendance: attendance[data.get('attendance')],
@@ -720,9 +762,21 @@
             p_consoles: Number(data.get('consoles')),
             p_monitors: Number(data.get('monitors')),
             p_tvs: Number(data.get('tvs')),
-            p_games: games,
-            p_notes: savedNotes
-          });
+            p_games: games
+          };
+          try {
+            await bdayRpc('bday_submit_v2', {
+              ...payload,
+              p_notes: notes,
+              p_console_types: consoleTypes,
+              p_other_console: String(data.get('otherConsole') || '').trim()
+            });
+          } catch (error) {
+            if (error.status !== 404) throw error;
+            // Backward-compatible until the new SQL script has been run.
+            // Keep the console information in private notes as before.
+            await bdayRpc('bday_submit', {...payload, p_notes: savedNotes});
+          }
           resultTitle.textContent = '✓ RSVP SAVED!';
           resultInfo.textContent = 'Your response is saved. This message is an optional copy for your records.';
           statusText.textContent = 'RSVP saved! You can come back on this device and update it.';
