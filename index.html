@@ -460,6 +460,120 @@
     modes.forEach(card => card.addEventListener('click', () => selectMode(card.dataset.mode)));
     modeSelect.addEventListener('change', () => selectMode(modeSelect.value));
 
+
+    // AFTER SETUP: paste only the Supabase project URL and PUBLISHABLE key here.
+    // Publishable keys are designed for browsers; NEVER paste a secret/service_role key.
+    const RSVP_BACKEND = {
+      url: '',
+      publishableKey: ''
+    };
+    const LIVE_RSVP = /^https:\/\/[a-z0-9-]+\.supabase\.co\/?$/i.test(RSVP_BACKEND.url)
+      && RSVP_BACKEND.publishableKey.startsWith('sb_publishable_');
+
+    async function bdayRpc(functionName, payload) {
+      const response = await fetch(RSVP_BACKEND.url.replace(/\/$/, '') + '/rest/v1/rpc/' + functionName, {
+        method: 'POST',
+        headers: {
+          apikey: RSVP_BACKEND.publishableKey,
+          'Content-Type': 'application/json',
+          Accept: 'application/json'
+        },
+        cache: 'no-store',
+        body: JSON.stringify(payload)
+      });
+      if (!response.ok) throw new Error('RSVP server error (' + response.status + ')');
+      if (functionName === 'bday_lobby') return response.json();
+    }
+
+    function renderLobby(data) {
+      const confirmed = Number(data.confirmed || 0);
+      const overnight = Number(data.overnight || 0);
+      const day = Number(data.day || 0);
+      const unsure = Number(data.unsure || 0);
+      ['confirmed','maybe','stealthed','overnight','day','unsure','pcs','consoles','monitors','tvs']
+        .forEach(key => {
+          document.getElementById('lobby-' + key).textContent = String(Number(data[key] || 0));
+        });
+      document.getElementById('lobby-donut-total').textContent = String(confirmed);
+      const donut = document.getElementById('lobby-donut');
+      const all = overnight + day + unsure;
+      if (all > 0) {
+        const first = overnight / all * 100;
+        const second = (overnight + day) / all * 100;
+        donut.style.background = 'conic-gradient(#d1ff69 0% ' + first + '%, #ff6f9a ' +
+          first + '% ' + second + '%, #7fe2e4 ' + second + '% 100%)';
+      } else {
+        donut.style.background = '#403958';
+      }
+
+      const roster = document.getElementById('lobby-roster');
+      roster.replaceChildren();
+      const players = Array.isArray(data.players) ? data.players : [];
+      if (!players.length) {
+        const empty = document.createElement('p');
+        empty.className = 'lobby-empty';
+        empty.textContent = 'No public gamer tags yet. Stealthed players stay hidden.';
+        roster.appendChild(empty);
+      } else {
+        players.forEach(player => {
+          const tag = document.createElement('span');
+          tag.className = 'player-tag';
+          tag.textContent = '▶ ' + String(player.name || '').slice(0,90);
+          roster.appendChild(tag);
+        });
+      }
+
+      const gamesBox = document.getElementById('lobby-games');
+      gamesBox.replaceChildren();
+      const games = Array.isArray(data.games) ? data.games : [];
+      if (!games.length) {
+        const empty = document.createElement('p');
+        empty.className = 'lobby-empty';
+        empty.textContent = 'No votes yet.';
+        gamesBox.appendChild(empty);
+      } else {
+        const top = Math.max(1, ...games.map(game => Number(game.votes) || 0));
+        games.forEach(game => {
+          const item = document.createElement('div');
+          item.className = 'game-vote';
+          const label = document.createElement('span');
+          label.textContent = String(game.name || '');
+          const track = document.createElement('div');
+          track.className = 'game-vote-track';
+          const fill = document.createElement('div');
+          fill.className = 'game-vote-fill';
+          fill.style.width = (100 * (Number(game.votes) || 0) / top) + '%';
+          track.appendChild(fill);
+          const votes = document.createElement('span');
+          votes.textContent = String(Number(game.votes) || 0);
+          item.append(label, track, votes);
+          gamesBox.appendChild(item);
+        });
+      }
+    }
+    async function refreshLobby() {
+      if (!LIVE_RSVP) return;
+      const status = document.getElementById('lobby-connection');
+      try {
+        const data = await bdayRpc('bday_lobby', {});
+        renderLobby(data);
+        status.classList.remove('offline');
+        status.textContent = '● SERVER ONLINE — LIVE PLAYER LOBBY';
+      } catch (error) {
+        status.classList.add('offline');
+        status.textContent = '● LOBBY CONNECTION ERROR — WILL RETRY';
+        console.warn('Lobby unavailable:', error);
+      }
+    }
+    if (LIVE_RSVP) {
+      document.getElementById('form-intro').textContent =
+        'Your RSVP saves automatically. Submitting again from this browser updates your entry.';
+      document.getElementById('rsvp-submit-button').textContent = '▶ SAVE MY RSVP';
+      document.getElementById('lobby-connection').textContent = '● CONNECTING TO PLAYER LOBBY...';
+      refreshLobby();
+      setInterval(() => { if (!document.hidden) refreshLobby(); }, 30000);
+    }
+
     let currentMessage = '';
     document.getElementById('rsvp-form').addEventListener('submit', event => {
       event.preventDefault();
