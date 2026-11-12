@@ -55,6 +55,28 @@ In Supabase Table Editor, export the `bday_rsvps` table as CSV. Open that CSV in
 
 
 
+## Sidequest interest (new)
+
+The Sidequest is an **optional alternative hangout after the birthday**, separate from the overnight LAN. People may RSVP for Day Shift / All-Nighter / both, and independently mark the Sidequest as **No / Maybe / Interested**. This lets you see interest without treating it as a firm booking.
+
+1. Open [`supabase-sidequest-upgrade.sql`](./supabase-sidequest-upgrade.sql).
+2. Paste the **entire script** into **Supabase → SQL Editor** and select **Run**. This works after the original setup, even if the V2 or V3 upgrades were not run.
+3. Reload your website, choose Sidequest **Interested**, and save a test RSVP.
+4. Under **RSVP LIVE STATS → GAME MODE SELECT → SIDEQUEST INTEREST**, look for the **Interested / Maybe** counts (confirmed RSVPs only).
+
+Existing responses are preserved. For guests who answered before this update, Sidequest defaults to **No** until they resubmit. If you do not run the new SQL yet, the page still saves the Sidequest preference in private notes via the previous compatible function, but the public Sidequest counts stay unavailable.
+
+To see individual Sidequest interests privately as the host, use **Supabase → Table Editor → bday_rsvps**, or run this query in the private SQL Editor:
+
+```sql
+select player_name, attendance, visit_mode, sidequest_interest, notes
+from public.bday_rsvps
+where sidequest_interest in ('yes', 'maybe')
+order by sidequest_interest, created_at;
+```
+
+Do not expose these private names or notes on the public website.
+
 ## Daytime + overnight selection upgrade
 
 To allow a guest to select **Day Shift**, **All-Nighter**, or **both** in the same RSVP and to count each choice separately in public stats:
