@@ -166,6 +166,7 @@
     .lobby-score span{font:900 .68rem "Courier New",monospace;letter-spacing:.08em;margin-top:8px}
     .lobby-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
     .lobby-panel{padding:21px;background:#2b2645;border:2px solid #595078;min-width:0}
+    .lobby-panel--wide{grid-column:1/-1}
     .lobby-panel h3{font:900 1.05rem "Courier New",monospace;margin:0 0 17px;letter-spacing:.04em}
     .lobby-donut-wrap{display:flex;align-items:center;gap:18px}
     .lobby-donut{width:148px;aspect-ratio:1;border-radius:50%;background:#403958;display:grid;place-items:center;flex:none;transition:background .5s}
@@ -186,9 +187,6 @@
     .lobby-roster{display:flex;flex-wrap:wrap;gap:9px;align-items:flex-start;min-height:40px}
     .player-tag{border:2px solid #796ba2;background:#19162d;color:#ecddff;padding:7px 10px;font:900 .76rem "Courier New",monospace;overflow-wrap:anywhere;max-width:100%}
     .lobby-empty{font-size:.84rem;color:#aba2c3;margin:0}
-    .game-vote{display:grid;grid-template-columns:100px 1fr 28px;gap:8px;align-items:center;margin:11px 0;font-size:.74rem;font-weight:700}
-    .game-vote-track{height:13px;background:#161329;border:1px solid #625783;overflow:hidden}
-    .game-vote-fill{height:100%;background:var(--pink);min-width:0;transition:width .4s}
     @media(max-width:700px){.lobby-grid{grid-template-columns:1fr}.lobby-shell{padding:17px}.lobby-donut{width:132px}}
     @media(max-width:430px){.gear-grid,.lobby-equipment{grid-template-columns:repeat(2,minmax(0,1fr))}.lobby-score span{font-size:.58rem}.lobby-donut{width:120px}.lobby-donut-wrap{gap:12px}}
     .footer{padding:45px 0;text-align:center;background:#0d0c17;color:#b9b1cd}
@@ -347,7 +345,6 @@
                     <input id="console-other" name="otherConsole" maxlength="70" placeholder="Which console?">
                   </div>
                 </div>
-                <div class="field full"><label>WHAT WOULD YOU PLAY? (OPTIONAL)</label><div class="choice-row" role="group" aria-label="Game preferences"><label class="choice"><input type="checkbox" name="games" value="Co-op"> Co-op</label><label class="choice"><input type="checkbox" name="games" value="Party games"> Party games</label><label class="choice"><input type="checkbox" name="games" value="Competitive"> Competitive</label><label class="choice"><input type="checkbox" name="games" value="Retro classics"> Retro classics</label><label class="choice"><input type="checkbox" name="games" value="Anything!"> Anything!</label></div></div>
                 <div class="field full"><label for="notes">ANYTHING I SHOULD KNOW? (OPTIONAL)</label><textarea id="notes" name="notes" maxlength="320" placeholder="Dietary needs, sleeping arrangements, game suggestions, +1, questions..."></textarea></div>
               </div>
               <button class="primary-btn rsvp-button" id="rsvp-submit-button" type="submit">▶ Generate my RSVP</button><p id="rsvp-status" class="rsvp-status" role="status"></p>
@@ -369,7 +366,7 @@
         <div class="section-heading">
           <div class="eyebrow">04 / MULTIPLAYER</div>
           <h2 id="lobby-title">RSVP LIVE STATS</h2>
-          <p>Real RSVP stats, not random made-up players. Only confirmed guests count toward equipment totals. Your gamer tag appears only if you choose to be visible.</p>
+          <p>Real RSVP stats.</p>
         </div>
         <div class="lobby-shell">
           <div class="lobby-connection offline" id="lobby-connection" role="status">● LIVE STATS NOT CONNECTED YET</div>
@@ -403,15 +400,10 @@
               <p class="lobby-help"><strong>Console types</strong> — confirmed guests bringing each model:</p>
               <div id="lobby-console-types" class="console-breakdown" aria-live="polite"><span class="lobby-empty">Loading console types...</span></div>
             </div>
-            <div class="lobby-panel">
+            <div class="lobby-panel lobby-panel--wide">
               <h3>▤ PLAYER ROSTER</h3>
               <div class="lobby-roster" id="lobby-roster" aria-live="polite"><p class="lobby-empty">Waiting for the lobby to connect.</p></div>
               <p class="lobby-help">Only players who untick “Stay anonymous” appear here.</p>
-            </div>
-            <div class="lobby-panel">
-              <h3>▦ GAME VOTES</h3>
-              <div id="lobby-games"><p class="lobby-empty">No live votes yet.</p></div>
-              <p class="lobby-help">A guest can vote for several game types.</p>
             </div>
           </div>
         </div>
@@ -579,33 +571,6 @@
         });
       }
 
-      const gamesBox = document.getElementById('lobby-games');
-      gamesBox.replaceChildren();
-      const games = Array.isArray(data.games) ? data.games : [];
-      if (!games.length) {
-        const empty = document.createElement('p');
-        empty.className = 'lobby-empty';
-        empty.textContent = 'No votes yet.';
-        gamesBox.appendChild(empty);
-      } else {
-        const top = Math.max(1, ...games.map(game => Number(game.votes) || 0));
-        games.forEach(game => {
-          const item = document.createElement('div');
-          item.className = 'game-vote';
-          const label = document.createElement('span');
-          label.textContent = String(game.name || '');
-          const track = document.createElement('div');
-          track.className = 'game-vote-track';
-          const fill = document.createElement('div');
-          fill.className = 'game-vote-fill';
-          fill.style.width = (100 * (Number(game.votes) || 0) / top) + '%';
-          track.appendChild(fill);
-          const votes = document.createElement('span');
-          votes.textContent = String(Number(game.votes) || 0);
-          item.append(label, track, votes);
-          gamesBox.appendChild(item);
-        });
-      }
     }
     async function refreshLobby() {
       if (!LIVE_RSVP) return;
@@ -688,7 +653,8 @@
       const form = event.currentTarget;
       if (!form.reportValidity()) return;
       const data = new FormData(form);
-      const games = data.getAll('games');
+      // Keep the existing Supabase RPC signature; the game-voting question is removed.
+      const games = [];
       const anonymous = data.has('stay-anonymous');
       const consoleCount = Number(data.get('consoles'));
       const consoleTypes = data.getAll('consoleTypes');
@@ -730,7 +696,6 @@
         'Coming for: ' + data.get('mode'),
         'Equipment: ' + equipment,
         'Console types: ' + (selectedConsoles.length ? selectedConsoles.join(', ') : 'None'),
-        'Games: ' + (games.length ? games.join(', ') : 'No preference'),
         'Private notes: ' + (notes || 'None'),
         '',
         'Sent from Bday & Games.'
