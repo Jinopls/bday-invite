@@ -145,10 +145,10 @@
     .stealth-choice span{display:flex;flex-direction:column;gap:3px}
     .stealth-choice strong{font:900 .76rem "Courier New",monospace}
     .stealth-choice small{font-size:.75rem;color:#5f596f;line-height:1.4}
-    .gear-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:11px;margin-top:6px}
+    .gear-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px;margin-top:6px}
     .gear-field{padding:11px 8px;background:#eeeaf4;border:2px solid #c6bcd3;text-align:center}
     .gear-field label{display:block;min-height:35px;font:900 .76rem "Courier New",monospace}
-    .gear-field input{width:100%;min-height:42px;text-align:center;font-weight:900;font-family:"Courier New",monospace;background:white}
+    .gear-field select{width:100%;min-height:42px;text-align:center;font-weight:900;font-family:"Courier New",monospace;background:white;padding:8px 6px}
     .gear-helper{color:#666073;font-size:.79rem;margin:1px 0 6px}
     .rsvp-status{margin:12px 0 0;color:#494361;font-size:.85rem;min-height:1.3em}
     .rsvp-status.error{color:#a22c4d;font-weight:700}
@@ -176,7 +176,7 @@
     .lobby-legend{display:grid;gap:10px;font-size:.8rem}
     .legend-dot{display:inline-block;width:10px;height:10px;margin-right:7px}
     .lobby-help{font-size:.77rem;color:#b6accf;margin-top:14px}
-    .lobby-equipment{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:11px}
+    .lobby-equipment{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px}
     .lobby-equipment div{text-align:center;background:#1d1935;border:1px solid #605780;padding:13px 5px}
     .lobby-equipment strong{display:block;font:900 1.7rem "Courier New",monospace;color:var(--lime)}
     .lobby-equipment span{font:900 .65rem "Courier New",monospace;color:#d9d1ee}
@@ -188,7 +188,7 @@
     .player-tag{border:2px solid #796ba2;background:#19162d;color:#ecddff;padding:7px 10px;font:900 .76rem "Courier New",monospace;overflow-wrap:anywhere;max-width:100%}
     .lobby-empty{font-size:.84rem;color:#aba2c3;margin:0}
     @media(max-width:700px){.lobby-grid{grid-template-columns:1fr}.lobby-shell{padding:17px}.lobby-donut{width:132px}}
-    @media(max-width:430px){.gear-grid,.lobby-equipment{grid-template-columns:repeat(2,minmax(0,1fr))}.lobby-score span{font-size:.58rem}.lobby-donut{width:120px}.lobby-donut-wrap{gap:12px}}
+    @media(max-width:430px){.gear-grid{grid-template-columns:1fr}.lobby-equipment{grid-template-columns:repeat(3,minmax(0,1fr))}.lobby-score span{font-size:.58rem}.lobby-donut{width:120px}.lobby-donut-wrap{gap:12px}}
     .footer{padding:45px 0;text-align:center;background:#0d0c17;color:#b9b1cd}
     .footer .pixel{color:var(--lime);font-size:1.1rem;margin-bottom:8px}
     .footer small{font-size:.76rem}
@@ -320,12 +320,11 @@
                 </div>
                 <div class="field"><label for="attendance">ARE YOU COMING? *</label><select id="attendance" name="attendance" required><option value="Yes, I'm in!">Yes, I'm in!</option><option value="Maybe / not sure yet">Maybe / not sure yet</option><option value="Sadly can't make it">Sadly can't make it</option></select></div>
                 <div class="field"><label for="mode-select">WHICH PART?</label><select id="mode-select" name="mode"><option value="Undecided">Not sure yet</option><option value="Birthday hangout only">Birthday only</option><option value="Full weekend: overnight LAN + birthday">Overnight LAN + birthday</option></select></div>
-                <div class="field full"><label>YOUR GEAR (QUANTITY)</label><p class="gear-helper">How many of each are you bringing? Leave at 0 if none. Set Consoles above 0 to choose Switch, Xbox, PlayStation or Other.</p>
+                <div class="field full"><label>YOUR GEAR</label><p class="gear-helper">What are you bringing? Choose None or 1–3 for each item. Selecting consoles also lets you choose the model.</p>
                   <div class="gear-grid">
-                    <div class="gear-field"><label for="gear-pcs">🖥️ PCs</label><input id="gear-pcs" name="pcs" type="number" min="0" max="8" step="1" value="0" required></div>
-                    <div class="gear-field"><label for="gear-consoles">🎮 Consoles</label><input id="gear-consoles" name="consoles" type="number" min="0" max="8" step="1" value="0" required></div>
-                    <div class="gear-field"><label for="gear-monitors">🖥️ Monitors</label><input id="gear-monitors" name="monitors" type="number" min="0" max="8" step="1" value="0" required></div>
-                    <div class="gear-field"><label for="gear-tvs">📺 TVs</label><input id="gear-tvs" name="tvs" type="number" min="0" max="8" step="1" value="0" required></div>
+                    <div class="gear-field"><label for="gear-pcs">🖥️ PCs</label><select id="gear-pcs" name="pcs" required><option value="0" selected>None</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></div>
+                    <div class="gear-field"><label for="gear-consoles">🎮 Consoles</label><select id="gear-consoles" name="consoles" required><option value="0" selected>None</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></div>
+                    <div class="gear-field"><label for="gear-screens">📺 Screens</label><select id="gear-screens" name="screens" required><option value="0" selected>None</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></div>
                   </div>
                 </div>
 
@@ -393,8 +392,7 @@
               <div class="lobby-equipment">
                 <div><strong id="lobby-pcs">—</strong><span>🖥️ PCs</span></div>
                 <div><strong id="lobby-consoles">—</strong><span>🎮 CONSOLES</span></div>
-                <div><strong id="lobby-monitors">—</strong><span>🖥️ MONITORS</span></div>
-                <div><strong id="lobby-tvs">—</strong><span>📺 TVs</span></div>
+                <div><strong id="lobby-screens">—</strong><span>📺 SCREENS</span></div>
               </div>
               <p class="lobby-help">Equipment totals from confirmed guests only.</p>
               <p class="lobby-help"><strong>Console types</strong> — confirmed guests bringing each model:</p>
@@ -512,10 +510,13 @@
       const overnight = Number(data.overnight || 0);
       const day = Number(data.day || 0);
       const unsure = Number(data.unsure || 0);
-      ['confirmed','maybe','stealthed','overnight','day','unsure','pcs','consoles','monitors','tvs']
+      ['confirmed','maybe','stealthed','overnight','day','unsure','pcs','consoles']
         .forEach(key => {
           document.getElementById('lobby-' + key).textContent = String(Number(data[key] || 0));
         });
+      // Existing guests' monitors and TVs are both counted as screens.
+      document.getElementById('lobby-screens').textContent =
+        String(Number(data.monitors || 0) + Number(data.tvs || 0));
       document.getElementById('lobby-donut-total').textContent = String(confirmed);
       const donut = document.getElementById('lobby-donut');
       const all = overnight + day + unsure;
@@ -623,7 +624,7 @@
       consoleOther.required = otherChosen;
       if (!otherChosen) consoleOther.value = '';
     }
-    consoleQuantity.addEventListener('input', syncConsolePicker);
+    consoleQuantity.addEventListener('change', syncConsolePicker);
     consoleChoices.forEach(choice => choice.addEventListener('change', syncConsolePicker));
     syncConsolePicker();
 
@@ -685,7 +686,7 @@
         statusText.textContent = 'Please shorten your notes slightly to fit the console details.';
         return;
       }
-      const equipment = ['pcs','consoles','monitors','tvs']
+      const equipment = ['pcs','consoles','screens']
         .map(type => type.toUpperCase() + ': ' + data.get(type)).join(' · ');
       currentMessage = [
         '🎮 BDAY & GAMES — RSVP',
@@ -725,8 +726,10 @@
             p_is_anonymous: anonymous,
             p_pcs: Number(data.get('pcs')),
             p_consoles: Number(data.get('consoles')),
-            p_monitors: Number(data.get('monitors')),
-            p_tvs: Number(data.get('tvs')),
+            // Save screens in the existing monitor column; leave TVs at 0.
+            // This preserves both original and upgraded RPC compatibility.
+            p_monitors: Number(data.get('screens')),
+            p_tvs: 0,
             p_games: games
           };
           try {
