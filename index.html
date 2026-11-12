@@ -90,7 +90,7 @@
     .mode-card[aria-pressed="true"]{background:#eafdc6;box-shadow:8px 8px 0 var(--pink)}
     .mode-card[aria-pressed="true"]:after{content:"SELECTED ✓";position:absolute;right:18px;top:17px;background:var(--ink);color:var(--lime);font:800 .65rem monospace;padding:6px 8px}
     .mode-icon{display:inline-grid;place-items:center;width:68px;height:68px;background:var(--pink);border:3px solid var(--ink);box-shadow:4px 4px 0 var(--ink);font-size:2rem;margin-bottom:18px}
-    .mode-card:nth-child(2) .mode-icon{background:var(--cyan)}
+    .mode-card[data-mode="Birthday hangout only"] .mode-icon{background:var(--cyan)}
     .mode-card h3{font:900 1.7rem/1.1 "Courier New",monospace;margin:0 0 10px;letter-spacing:-.04em}
     .mode-card p{margin:0 0 20px;color:#48445d;max-width:390px}
     .mode-foot{font:900 .75rem "Courier New",monospace;border-top:2px dashed #9c97ac;padding-top:17px;letter-spacing:.04em}
@@ -125,7 +125,10 @@
     .choice-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:7px}
     .choice{display:flex;align-items:center;gap:8px;background:#ece8f1;border:2px solid #b9b0c9;padding:9px 11px;font-size:.86rem;cursor:pointer}
     .choice:has(input:checked){background:#dbf9a0;border-color:#353824}
-    .choice input{accent-color:#4a4270;width:17px;height:17px}
+    .choice input{accent-color:#4a4270;width:17px;height:17px;min-height:0;padding:0;flex:none}
+    .console-picker[hidden],#console-other-wrap[hidden]{display:none}
+    #console-other-wrap{margin-top:12px}
+    .console-picker{border:2px dashed #a6a0b2;background:#f1ecf7;padding:14px}
     .rsvp-button{margin-top:25px;width:100%}
     .result{margin-top:24px;border:3px dashed #6b5c89;background:#e9f7cb;padding:20px;display:none}
     .result.show{display:block}
@@ -271,11 +274,11 @@
       <div class="wrap">
         <div class="section-heading"><h2 id="modes-title">CHOOSE YOUR DESTINY</h2><p>(how long do you want to stay?)</p></div>
         <div class="mode-grid">
-          <button class="mode-card" type="button" data-mode="Full weekend: overnight LAN + birthday" aria-pressed="false">
-            <span class="mode-icon" aria-hidden="true">🎮</span><h3>THE ALL-NIGHTER</h3><p>Bring your PC or console. We'll spend ages deciding what to play and then suddenly it'll be 5 AM.</p><div class="mode-foot">OVERNIGHT LAN + BIRTHDAY →</div>
-          </button>
           <button class="mode-card" type="button" data-mode="Birthday hangout only" aria-pressed="false">
             <span class="mode-icon" aria-hidden="true">🎉</span><h3>THE DAY SHIFT</h3><p>Arrive well-rested. Eat, hang out, and politely ignore how terrible the overnight crowd looks.</p><div class="mode-foot">BIRTHDAY ONLY →</div>
+          </button>
+          <button class="mode-card" type="button" data-mode="Full weekend: overnight LAN + birthday" aria-pressed="false">
+            <span class="mode-icon" aria-hidden="true">🎮</span><h3>THE ALL-NIGHTER</h3><p>Bring your PC or console. We'll spend ages deciding what to play and then suddenly it'll be 5 AM.</p><div class="mode-foot">OVERNIGHT LAN + BIRTHDAY →</div>
           </button>
         </div>
       </div>
@@ -311,10 +314,10 @@
             <form id="rsvp-form">
               <div class="fields">
                 <div class="field"><label for="guest-name">IN-GAME NAME *</label><input id="guest-name" name="name" type="text" autocomplete="nickname" maxlength="90" placeholder="Your in-game name" required>
-                  <label class="stealth-choice" for="stay-anonymous"><input type="checkbox" id="stay-anonymous" name="stay-anonymous" checked><span><strong>🥷 STAY ANONYMOUS</strong><small>Checked by default. You'll count as a stealthed player instead of appearing by name in the public lobby.</small></span></label>
+                  <label class="stealth-choice" for="stay-anonymous"><input type="checkbox" id="stay-anonymous" name="stay-anonymous" checked><span><strong>🥷 STAY ANONYMOUS</strong><small>Checked by default. You'll count as a stealthed player instead of appearing by name in the public RSVP stats.</small></span></label>
                 </div>
                 <div class="field"><label for="attendance">ARE YOU COMING? *</label><select id="attendance" name="attendance" required><option value="Yes, I'm in!">Yes, I'm in!</option><option value="Maybe / not sure yet">Maybe / not sure yet</option><option value="Sadly can't make it">Sadly can't make it</option></select></div>
-                <div class="field"><label for="mode-select">WHICH PART?</label><select id="mode-select" name="mode"><option value="Undecided">Not sure yet</option><option value="Full weekend: overnight LAN + birthday">Overnight LAN + birthday</option><option value="Birthday hangout only">Birthday only</option></select></div>
+                <div class="field"><label for="mode-select">WHICH PART?</label><select id="mode-select" name="mode"><option value="Undecided">Not sure yet</option><option value="Birthday hangout only">Birthday only</option><option value="Full weekend: overnight LAN + birthday">Overnight LAN + birthday</option></select></div>
                 <div class="field full"><label>YOUR GEAR (QUANTITY)</label><p class="gear-helper">How many of each are you bringing? Leave at 0 if none.</p>
                   <div class="gear-grid">
                     <div class="gear-field"><label for="gear-pcs">🖥️ PCs</label><input id="gear-pcs" name="pcs" type="number" min="0" max="8" step="1" value="0" required></div>
@@ -323,8 +326,25 @@
                     <div class="gear-field"><label for="gear-tvs">📺 TVs</label><input id="gear-tvs" name="tvs" type="number" min="0" max="8" step="1" value="0" required></div>
                   </div>
                 </div>
+
+                <div class="field full console-picker" id="console-picker" hidden>
+                  <label>WHICH CONSOLE(S) ARE YOU BRINGING?</label>
+                  <p class="gear-helper">Select all that apply. Console types are saved privately with your RSVP.</p>
+                  <div class="choice-row" role="group" aria-label="Console models">
+                    <label class="choice"><input type="checkbox" name="consoleTypes" value="Nintendo Switch 1"> Switch 1</label>
+                    <label class="choice"><input type="checkbox" name="consoleTypes" value="Nintendo Switch 2"> Switch 2</label>
+                    <label class="choice"><input type="checkbox" name="consoleTypes" value="Xbox"> Xbox</label>
+                    <label class="choice"><input type="checkbox" name="consoleTypes" value="PlayStation 4"> PS4</label>
+                    <label class="choice"><input type="checkbox" name="consoleTypes" value="PlayStation 5"> PS5</label>
+                    <label class="choice"><input type="checkbox" name="consoleTypes" value="Other"> Other (let us know!)</label>
+                  </div>
+                  <div class="field" id="console-other-wrap" hidden>
+                    <label for="console-other">WHAT OTHER CONSOLE?</label>
+                    <input id="console-other" name="otherConsole" maxlength="70" placeholder="Which console?">
+                  </div>
+                </div>
                 <div class="field full"><label>WHAT WOULD YOU PLAY? (OPTIONAL)</label><div class="choice-row" role="group" aria-label="Game preferences"><label class="choice"><input type="checkbox" name="games" value="Co-op"> Co-op</label><label class="choice"><input type="checkbox" name="games" value="Party games"> Party games</label><label class="choice"><input type="checkbox" name="games" value="Competitive"> Competitive</label><label class="choice"><input type="checkbox" name="games" value="Retro classics"> Retro classics</label><label class="choice"><input type="checkbox" name="games" value="Anything!"> Anything!</label></div></div>
-                <div class="field full"><label for="notes">ANYTHING I SHOULD KNOW? (OPTIONAL)</label><textarea id="notes" name="notes" maxlength="500" placeholder="Dietary needs, sleeping arrangements, game suggestions, +1, questions..."></textarea></div>
+                <div class="field full"><label for="notes">ANYTHING I SHOULD KNOW? (OPTIONAL)</label><textarea id="notes" name="notes" maxlength="320" placeholder="Dietary needs, sleeping arrangements, game suggestions, +1, questions..."></textarea></div>
               </div>
               <button class="primary-btn rsvp-button" id="rsvp-submit-button" type="submit">▶ Generate my RSVP</button><p id="rsvp-status" class="rsvp-status" role="status"></p>
             </form>
@@ -334,7 +354,7 @@
               <pre id="rsvp-message"></pre>
               <div class="result-actions"><button id="copy-button" type="button">📋 COPY MESSAGE</button><button id="share-button" type="button">↗ SHARE MESSAGE</button></div>
             </div>
-            <p class="form-note">Privacy: Private notes are never shown in the public lobby. Only confirmed guests who untick “Stay anonymous” can have their in-game name displayed.</p>
+            <p class="form-note">Privacy: Private notes are never shown in the public RSVP stats. Only confirmed guests who untick “Stay anonymous” can have their in-game name displayed.</p>
           </div>
         </div>
       </div>
@@ -344,11 +364,11 @@
       <div class="wrap">
         <div class="section-heading">
           <div class="eyebrow">04 / MULTIPLAYER</div>
-          <h2 id="lobby-title">PLAYER LOBBY</h2>
+          <h2 id="lobby-title">RSVP LIVE STATS</h2>
           <p>Real RSVP stats, not random made-up players. Only confirmed guests count toward equipment totals. Your gamer tag appears only if you choose to be visible.</p>
         </div>
         <div class="lobby-shell">
-          <div class="lobby-connection offline" id="lobby-connection" role="status">● LOBBY NOT CONNECTED YET — LIVE STATS COMING SOON</div>
+          <div class="lobby-connection offline" id="lobby-connection" role="status">● LIVE STATS NOT CONNECTED YET</div>
           <div class="lobby-scoreboard">
             <div class="lobby-score"><strong id="lobby-confirmed">—</strong><span>CONFIRMED</span></div>
             <div class="lobby-score"><strong id="lobby-maybe">—</strong><span>MAYBE</span></div>
@@ -558,7 +578,7 @@
         const data = await bdayRpc('bday_lobby', {});
         renderLobby(data);
         status.classList.remove('offline');
-        status.textContent = '● SERVER ONLINE — LIVE PLAYER LOBBY';
+        status.textContent = '● SERVER ONLINE — RSVP LIVE STATS';
       } catch (error) {
         status.classList.add('offline');
         status.textContent = '● LOBBY CONNECTION ERROR — WILL RETRY';
@@ -569,7 +589,7 @@
       document.getElementById('form-intro').textContent =
         'Your RSVP saves automatically. Submitting again from this browser updates your entry.';
       document.getElementById('rsvp-submit-button').textContent = '▶ SAVE MY RSVP';
-      document.getElementById('lobby-connection').textContent = '● CONNECTING TO PLAYER LOBBY...';
+      document.getElementById('lobby-connection').textContent = '● CONNECTING TO RSVP LIVE STATS...';
       refreshLobby();
       setInterval(() => { if (!document.hidden) refreshLobby(); }, 30000);
     }
@@ -609,7 +629,7 @@
         '🎮 BDAY & GAMES — RSVP',
         '',
         'Player: ' + String(data.get('name')).trim(),
-        'Public name: ' + (anonymous ? 'No — stay stealthed' : 'Yes — show in player lobby'),
+        'Public name: ' + (anonymous ? 'No — stay stealthed' : 'Yes — show in public RSVP stats'),
         'Attendance: ' + data.get('attendance'),
         'Coming for: ' + data.get('mode'),
         'Equipment: ' + equipment,
