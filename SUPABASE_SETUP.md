@@ -53,6 +53,20 @@ You may also give the project URL and **publishable-only** key to ChatGPT to con
 
 In Supabase Table Editor, export the `bday_rsvps` table as CSV. Open that CSV in LibreOffice Calc. The CSV is a downloadable snapshot, not a continuously synchronized .ods file.
 
+
+## Optional upgrade: structured console types and console breakdown
+
+If you already ran the original setup script, **do not rerun it**.
+
+1. Open the [console upgrade SQL](./supabase-console-upgrade.sql).
+2. Copy the **entire file** into the Supabase **SQL Editor** and click **Run**.
+3. Reload the birthday website and submit an RSVP with a console selected.
+4. The public RSVP Live Stats shows a breakdown of **how many confirmed guests selected each model** (Switch 1, Switch 2, Xbox, PS4, PS5 or Other). The public view never shows the free-text "Other" details.
+
+This migration preserves existing RSVPs. Before you run it, the site still saves console choices inside private notes using the original \`bday_submit\` function. After you run it, the site uses \`bday_submit_v2\` and stores them in separate private fields \`console_types\` and \`other_console\`. Existing test RSVPs saved before the upgrade will not appear in the new model breakdown until submitted again from the same browser.
+
+The migration keeps the original database functions intact, so older cached site versions keep working. The website automatically falls back when the upgrade hasn't been run yet.
+
 ## Free-tier availability
 
 Supabase Free projects can pause after about a week of low database activity. Before sending invitations and before the event, check your Supabase dashboard and resume the project if necessary. Supabase emails the project owner when a project is paused. A paused project cannot accept RSVPs until resumed. The website will show a connection error rather than pretending it saved a submission.
