@@ -316,7 +316,7 @@
             <form id="rsvp-form">
               <div class="fields">
                 <div class="field"><label for="guest-name">IN-GAME NAME *</label><input id="guest-name" name="name" type="text" autocomplete="nickname" maxlength="90" placeholder="Your in-game name" required>
-                  <label class="stealth-choice" for="stay-anonymous"><input type="checkbox" id="stay-anonymous" name="stay-anonymous" checked><span><strong>🥷 STAY ANONYMOUS</strong><small>Checked by default. You'll count as a stealthed player instead of appearing by name in the public RSVP stats.</small></span></label>
+                  <label class="stealth-choice" for="stay-anonymous"><input type="checkbox" id="stay-anonymous" name="stay-anonymous"><span><strong>🥷 STAY ANONYMOUS</strong><small>Check to go stealthed.</small></span></label>
                 </div>
                 <div class="field"><label for="attendance">ARE YOU COMING? *</label><select id="attendance" name="attendance" required><option value="Yes, I'm in!">Yes, I'm in!</option><option value="Maybe / not sure yet">Maybe / not sure yet</option><option value="Sadly can't make it">Sadly can't make it</option></select></div>
                 <div class="field"><label for="mode-select">WHICH PART?</label><select id="mode-select" name="mode"><option value="Undecided">Not sure yet</option><option value="Birthday hangout only">Birthday only</option><option value="Full weekend: overnight LAN + birthday">Overnight LAN + birthday</option></select></div>
@@ -354,7 +354,7 @@
               <pre id="rsvp-message"></pre>
               <div class="result-actions"><button id="copy-button" type="button">📋 COPY MESSAGE</button><button id="share-button" type="button">↗ SHARE MESSAGE</button></div>
             </div>
-            <p class="form-note">Privacy: Private notes are never shown in the public RSVP stats. Only confirmed guests who untick “Stay anonymous” can have their in-game name displayed.</p>
+            <p class="form-note">Privacy: Private notes are never shown in the public RSVP stats. Confirmed guests appear by gamer tag unless they check “Stay anonymous”.</p>
           </div>
         </div>
       </div>
@@ -401,7 +401,7 @@
             <div class="lobby-panel lobby-panel--wide">
               <h3>▤ PLAYER ROSTER</h3>
               <div class="lobby-roster" id="lobby-roster" aria-live="polite"><p class="lobby-empty">Waiting for the lobby to connect.</p></div>
-              <p class="lobby-help">Only players who untick “Stay anonymous” appear here.</p>
+              <p class="lobby-help">Only confirmed players who leave “Stay anonymous” unchecked appear here.</p>
             </div>
           </div>
         </div>
