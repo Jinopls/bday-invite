@@ -54,6 +54,18 @@ You may also give the project URL and **publishable-only** key to ChatGPT to con
 In Supabase Table Editor, export the `bday_rsvps` table as CSV. Open that CSV in LibreOffice Calc. The CSV is a downloadable snapshot, not a continuously synchronized .ods file.
 
 
+
+## Daytime + overnight selection upgrade
+
+To allow a guest to select **Day Shift**, **All-Nighter**, or **both** in the same RSVP and to count each choice separately in public stats:
+
+1. Open [`supabase-visit-choices-upgrade.sql`](./supabase-visit-choices-upgrade.sql) in GitHub.
+2. Copy the entire script and run it in **Supabase → SQL Editor**.
+3. Reload the invitation. Choose both Destiny cards and confirm that **Which part?** reads **Both daytime + overnight**.
+4. Save an RSVP and look for the **Both** category in **RSVP LIVE STATS**.
+
+This upgrade leaves existing RSVPs untouched. People who previously selected the old overnight option can resubmit their response to choose overnight only or both. The LAN packing list only shows when overnight is selected, including when both parts are selected. The webpage works with older database functions, but until this upgrade runs, a **Both** submission temporarily saves as **overnight** with the original Both selection preserved in private notes, so public stats will not yet display the correct breakdown.
+
 ## Optional upgrade: structured console types and console breakdown
 
 If you already ran the original setup script, **do not rerun it**.
