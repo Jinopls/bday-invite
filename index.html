@@ -574,28 +574,94 @@
       setInterval(() => { if (!document.hidden) refreshLobby(); }, 30000);
     }
 
+
     let currentMessage = '';
-    document.getElementById('rsvp-form').addEventListener('submit', event => {
+    const statusText = document.getElementById('rsvp-status');
+    const resultTitle = document.getElementById('result-title');
+    const resultInfo = document.getElementById('result-info');
+    const submitButton = document.getElementById('rsvp-submit-button');
+
+    // A private random ticket lets the same browser update an RSVP rather
+    // than create duplicate entries. This token is never shown in the lobby.
+    function getGuestTicket() {
+      const storageKey = 'bday-games-rsvp-ticket-v1';
+      try {
+        const previous = localStorage.getItem(storageKey);
+        if (previous && /^[0-9a-f-]{36}$/i.test(previous)) return previous;
+        const ticket = crypto.randomUUID();
+        localStorage.setItem(storageKey, ticket);
+        return ticket;
+      } catch (error) {
+        return crypto.randomUUID();
+      }
+    }
+
+    document.getElementById('rsvp-form').addEventListener('submit', async event => {
       event.preventDefault();
       const form = event.currentTarget;
       if (!form.reportValidity()) return;
       const data = new FormData(form);
       const games = data.getAll('games');
+      const anonymous = data.has('stay-anonymous');
+      const equipment = ['pcs','consoles','monitors','tvs']
+        .map(type => type.toUpperCase() + ': ' + data.get(type)).join(' · ');
       currentMessage = [
-        '🎮 Birthday LAN — RSVP',
+        '🎮 BDAY & GAMES — RSVP',
         '',
-        'Player: ' + data.get('name').trim(),
+        'Player: ' + String(data.get('name')).trim(),
+        'Public name: ' + (anonymous ? 'No — stay stealthed' : 'Yes — show in player lobby'),
         'Attendance: ' + data.get('attendance'),
         'Coming for: ' + data.get('mode'),
-        'Setup: ' + data.get('setup'),
+        'Equipment: ' + equipment,
         'Games: ' + (games.length ? games.join(', ') : 'No preference'),
-        'Notes: ' + (data.get('notes').trim() || 'None'),
+        'Private notes: ' + (String(data.get('notes') || '').trim() || 'None'),
         '',
-        'Sent from the birthday invite.'
+        'Sent from Bday & Games.'
       ].join('\n');
       document.getElementById('rsvp-message').textContent = currentMessage;
-      document.getElementById('result').classList.add('show');
-      document.getElementById('result').scrollIntoView({behavior:'smooth',block:'nearest'});
+      const result = document.getElementById('result');
+      result.classList.add('show');
+      resultTitle.textContent = '✓ MESSAGE READY';
+      resultInfo.textContent = 'Not sent or saved. Copy this message and send it to me, or use Share.';
+      statusText.classList.remove('error');
+      statusText.textContent = '';
+      if (LIVE_RSVP) {
+        submitButton.disabled = true;
+        submitButton.textContent = 'SAVING...';
+        try {
+          const attendance = {"Yes, I'm in!":'yes', 'Maybe / not sure yet':'maybe', "Sadly can't make it":'no'};
+          const modes = {
+            'Full weekend: overnight LAN + birthday':'overnight',
+            'Birthday hangout only':'day',
+            'Undecided':'unsure'
+          };
+          await bdayRpc('bday_submit', {
+            p_ticket: getGuestTicket(),
+            p_name: String(data.get('name')).trim(),
+            p_attendance: attendance[data.get('attendance')],
+            p_mode: modes[data.get('mode')],
+            p_is_anonymous: anonymous,
+            p_pcs: Number(data.get('pcs')),
+            p_consoles: Number(data.get('consoles')),
+            p_monitors: Number(data.get('monitors')),
+            p_tvs: Number(data.get('tvs')),
+            p_games: games,
+            p_notes: String(data.get('notes') || '').trim()
+          });
+          resultTitle.textContent = '✓ RSVP SAVED!';
+          resultInfo.textContent = 'Your response is saved. This message is an optional copy for your records.';
+          statusText.textContent = 'RSVP saved! You can come back on this device and update it.';
+          await refreshLobby();
+        } catch (error) {
+          statusText.textContent = 'Could not save your RSVP. Please copy/share the message below instead.';
+          statusText.classList.add('error');
+          console.warn('RSVP could not be saved:', error);
+        } finally {
+          submitButton.disabled = false;
+          submitButton.textContent = '▶ SAVE MY RSVP';
+        }
+      }
+      result.scrollIntoView({behavior:'smooth',block:'nearest'});
     });
     const toast = document.getElementById('toast');
     let toastTimeout;
