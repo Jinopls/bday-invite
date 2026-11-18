@@ -614,7 +614,7 @@
       if (!Array.isArray(data.afk_players)) {
         const message = document.createElement('p');
         message.className = 'lobby-empty';
-        message.textContent = 'AFK roster available after the database upgrade.';
+        message.textContent = 'No public AFK players yet.';
         afkRoster.appendChild(message);
       } else if (!data.afk_players.length) {
         const message = document.createElement('p');
