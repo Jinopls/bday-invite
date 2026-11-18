@@ -20,11 +20,8 @@ alter table public.bday_rsvps
   add constraint bday_rsvps_visit_mode_check
   check (visit_mode in ('day','overnight','both','unsure'));
 
-alter table public.bday_rsvps
-  drop constraint if exists bday_afk_opt_in_valid;
-alter table public.bday_rsvps
-  add constraint bday_afk_opt_in_valid
-  check (not afk_opt_in or (attendance = 'no' and stay_anonymous = false));
+-- The V5 submit function validates AFK opt-in. Keep older write
+-- functions compatible if an RSVP later changes its attendance.
 
 alter table public.bday_rsvps enable row level security;
 revoke all on table public.bday_rsvps from public, anon, authenticated;
