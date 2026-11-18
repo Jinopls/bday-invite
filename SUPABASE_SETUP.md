@@ -55,6 +55,26 @@ In Supabase Table Editor, export the `bday_rsvps` table as CSV. Open that CSV in
 
 
 
+## Private host dashboard (not on the invitation site)
+
+Use the **private** management views to see both an overall equipment/attendance summary and every guest's details, including optional Sidequest interest and private notes. These are **live SQL views**, not separate copies; updates to the existing RSVPs immediately change the numbers.
+
+1. Open [`supabase-private-dashboard.sql`](./supabase-private-dashboard.sql).
+2. Copy it into **Supabase → SQL Editor** and click **Run** once, using the default administrative role.
+3. In **Supabase → Table Editor**, choose the **`bday_admin`** schema, then open the **`summary`** or **`guest_list`** views. If you don't see them in the Table Editor, you can query them from SQL Editor instead:
+
+```sql
+select * from bday_admin.summary;
+```
+
+```sql
+select * from bday_admin.guest_list order by "Last updated" desc;
+```
+
+**ON = overnight; OD = daytime.** Guests selecting Both appear in both the ON and OD counts but count as only **one** in **Total coming**. PC, console and screen totals count the equipment brought by confirmed guests. Console model counts tell you how many confirmed guests selected each model (not how many units of that exact model), since the RSVP form only records an overall console quantity.
+
+**Privacy:** both views are in a separate non-public schema and deny access to public API roles, so guest names and private notes do not appear on the invitation. For changes to an individual response, use **`public.bday_rsvps`** in your private Supabase dashboard; these management views are read-only. Do not add the **`bday_admin`** schema to exposed Data API schemas.
+
 ## Sidequest interest (new)
 
 The Sidequest is an **optional alternative hangout after the birthday**, separate from the overnight LAN. People may RSVP for Day Shift / All-Nighter / both, and independently mark the Sidequest as **No / Maybe / Interested**. This lets you see interest without treating it as a firm booking.
