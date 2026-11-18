@@ -75,27 +75,22 @@ select * from bday_admin.guest_list order by "Last updated" desc;
 
 **Privacy:** both views are in a separate non-public schema and deny access to public API roles, so guest names and private notes do not appear on the invitation. For changes to an individual response, use **`public.bday_rsvps`** in your private Supabase dashboard; these management views are read-only. Do not add the **`bday_admin`** schema to exposed Data API schemas.
 
-## Sidequest interest (new)
+## Limited sleepover bonus (arranged privately)
 
-The Sidequest is an **optional alternative hangout after the birthday**, separate from the overnight LAN. People may RSVP for Day Shift / All-Nighter / both, and independently mark the Sidequest as **No / Maybe / Interested**. This lets you see interest without treating it as a firm booking.
+The **[04] BONUS — SLEEPOVER OPTION** on the invitation explains that a few guests can sleep at our place instead of joining the gaming all-nighter, with priority for the girls. Guests should **ask the hosts directly**, because these spaces are limited and not guaranteed.
 
-1. Open [`supabase-sidequest-upgrade.sql`](./supabase-sidequest-upgrade.sql).
-2. Paste the **entire script** into **Supabase → SQL Editor** and select **Run**. This works after the original setup, even if the V2 or V3 upgrades were not run.
-3. Reload your website, choose Sidequest **Interested**, and save a test RSVP.
-4. Under **RSVP LIVE STATS → GAME MODE SELECT → SIDEQUEST INTEREST**, look for the **Interested / Maybe** counts (confirmed RSVPs only).
+The RSVP form **does not ask for a sleepover spot**, and the public lobby **does not show sleepover requests**. No new database upgrade is needed.
 
-Existing responses are preserved. For guests who answered before this update, Sidequest defaults to **No** until they resubmit. If you do not run the new SQL yet, the page still saves the Sidequest preference in private notes via the previous compatible function, but the public Sidequest counts stay unavailable.
+Earlier versions of the site collected optional Sidequest interest. That historical information remains in the private database and can still be inspected by the host. The [`supabase-sidequest-upgrade.sql`](./supabase-sidequest-upgrade.sql) migration is retained for compatibility with older deployments, not needed for the current invitation.
 
-To see individual Sidequest interests privately as the host, use **Supabase → Table Editor → bday_rsvps**, or run this query in the private SQL Editor:
+If you ran that upgrade and want to review old submissions, use this admin-only SQL query:
 
 ```sql
 select player_name, attendance, visit_mode, sidequest_interest, notes
 from public.bday_rsvps
-where sidequest_interest in ('yes', 'maybe')
-order by sidequest_interest, created_at;
+where sidequest_interest in ('yes','maybe')
+order by created_at;
 ```
-
-Do not expose these private names or notes on the public website.
 
 ## Daytime + overnight selection upgrade
 
