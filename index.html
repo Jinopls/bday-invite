@@ -321,7 +321,7 @@
             <p class="form-intro" id="form-intro">For now, the form generates a message to send me. Automatic saving will switch on after I connect the database.</p>
             <form id="rsvp-form">
               <div class="fields">
-                <div class="field"><label for="guest-name">IN-GAME NAME *</label><input id="guest-name" name="name" type="text" autocomplete="nickname" maxlength="90" placeholder="Your in-game name" required>
+                <div class="field"><label for="guest-name">NAME / IN-GAME NAME *</label><input id="guest-name" name="name" type="text" autocomplete="nickname" maxlength="90" placeholder="Your in-game name" required>
                   <label class="stealth-choice" for="stay-anonymous"><input type="checkbox" id="stay-anonymous" name="stay-anonymous"><span><strong>🥷 STAY ANONYMOUS</strong><small>Check to go stealthed.</small></span></label>
                 </div>
                 <div class="field"><label for="attendance">ARE YOU COMING? *</label><select id="attendance" name="attendance" required><option value="Yes, I'm in!">Yes, I'm in!</option><option value="Maybe / not sure yet">Maybe / not sure yet</option><option value="Sadly can't make it">Sadly can't make it</option></select></div>
@@ -361,7 +361,7 @@
               <pre id="rsvp-message"></pre>
               <div class="result-actions"><button id="copy-button" type="button">📋 COPY MESSAGE</button><button id="share-button" type="button">↗ SHARE MESSAGE</button></div>
             </div>
-            <p class="form-note">Privacy: Private notes are never shown in the public RSVP stats. Confirmed guests appear by gamer tag unless they check “Stay anonymous”.</p>
+            <p class="form-note">Privacy: Private notes stay private. If you leave “Stay anonymous” unchecked, your name can appear in the Player Roster when coming, or the AFK section when you can't make it.</p>
           </div>
         </div>
       </div>
@@ -409,7 +409,12 @@
             <div class="lobby-panel lobby-panel--wide">
               <h3>▤ PLAYER ROSTER</h3>
               <div class="lobby-roster" id="lobby-roster" aria-live="polite"><p class="lobby-empty">Waiting for the lobby to connect.</p></div>
-              <p class="lobby-help">Only confirmed players who leave “Stay anonymous” unchecked appear here.</p>
+              <p class="lobby-help">Confirmed players who aren't stealthed.</p>
+            </div>
+            <div class="lobby-panel lobby-panel--wide">
+              <h3>◌ AFK — CAN'T MAKE IT</h3>
+              <div class="lobby-roster" id="lobby-afk" aria-live="polite"><p class="lobby-empty">Checking the AFK list...</p></div>
+              <p class="lobby-help">Can't attend? You're still part of the party. Names only appear if shared publicly.</p>
             </div>
           </div>
         </div>
@@ -604,6 +609,26 @@
           roster.appendChild(tag);
         });
       }
+      const afkRoster = document.getElementById('lobby-afk');
+      afkRoster.replaceChildren();
+      if (!Array.isArray(data.afk_players)) {
+        const message = document.createElement('p');
+        message.className = 'lobby-empty';
+        message.textContent = 'AFK roster available after the database upgrade.';
+        afkRoster.appendChild(message);
+      } else if (!data.afk_players.length) {
+        const message = document.createElement('p');
+        message.className = 'lobby-empty';
+        message.textContent = 'No public AFK players yet.';
+        afkRoster.appendChild(message);
+      } else {
+        data.afk_players.forEach(player => {
+          const tag = document.createElement('span');
+          tag.className = 'player-tag';
+          tag.textContent = '◌ ' + String(player.name || '').slice(0,90);
+          afkRoster.appendChild(tag);
+        });
+      }
 
     }
     async function refreshLobby() {
@@ -612,18 +637,23 @@
       try {
         let data;
         try {
-          data = await bdayRpc('bday_lobby_v4', {});
-        } catch (latestError) {
-          if (latestError.status !== 404) throw latestError;
+          data = await bdayRpc('bday_lobby_v5', {});
+        } catch (afkError) {
+          if (afkError.status !== 404) throw afkError;
           try {
-            data = await bdayRpc('bday_lobby_v3', {});
-          } catch (error) {
-            if (error.status !== 404) throw error;
+            data = await bdayRpc('bday_lobby_v4', {});
+          } catch (latestError) {
+            if (latestError.status !== 404) throw latestError;
             try {
-              data = await bdayRpc('bday_lobby_v2', {});
-            } catch (olderError) {
-              if (olderError.status !== 404) throw olderError;
-              data = await bdayRpc('bday_lobby', {});
+              data = await bdayRpc('bday_lobby_v3', {});
+            } catch (error) {
+              if (error.status !== 404) throw error;
+              try {
+                data = await bdayRpc('bday_lobby_v2', {});
+              } catch (olderError) {
+                if (olderError.status !== 404) throw olderError;
+                data = await bdayRpc('bday_lobby', {});
+              }
             }
           }
         }
@@ -787,14 +817,22 @@
             p_console_types: consoleTypes,
             p_other_console: String(data.get('otherConsole') || '').trim()
           };
-          // V4 tracks sleepover requests privately; the full Stay/Go choice
-          // is saved in host-only notes for each option.
+          // V5 stores AFK-public consent separately; older RSVPs remain hidden
+          // from AFK until their owners resubmit under the new notice.
+          const v4Details = {
+            ...v3Details,
+            p_sidequest_interest: stayPlan === 'sleepover' ? 'yes' : 'no'
+          };
           try {
-            await bdayRpc('bday_submit_v4', {
-              ...v3Details,
-              p_sidequest_interest: stayPlan === 'sleepover' ? 'yes' : 'no'
+            await bdayRpc('bday_submit_v5', {
+              ...v4Details,
+              p_afk_opt_in: attendance[data.get('attendance')] === 'no' && !anonymous
             });
-          } catch (error) {
+          } catch (afkError) {
+            if (afkError.status !== 404) throw afkError;
+            try {
+              await bdayRpc('bday_submit_v4', v4Details);
+            } catch (error) {
             if (error.status !== 404) throw error;
             try {
               await bdayRpc('bday_submit_v3', v3Details);
@@ -815,6 +853,7 @@
                 });
               }
             }
+          }
           }
           resultTitle.textContent = '✓ RSVP SAVED!';
           resultInfo.textContent = 'Your response is saved. This message is an optional copy for your records.';
