@@ -55,6 +55,19 @@ In Supabase Table Editor, export the `bday_rsvps` table as CSV. Open that CSV in
 
 
 
+## AFK roster (guests who can't attend)
+
+The public invitation now has a separate **AFK — CAN'T MAKE IT** section below the Player Roster. Someone who selects **Sadly can't make it** still fills in their **Name / In-game name**. If they leave **Stay Anonymous** unchecked, their name appears under AFK instead of the confirmed Player Roster.
+
+For privacy, **previously submitted declined RSVPs are not automatically shown by name**. Those guests need to submit again after this change to opt in.
+
+1. Open [`supabase-afk-roster-upgrade.sql`](./supabase-afk-roster-upgrade.sql).
+2. Copy the entire SQL file and run it once in **Supabase → SQL Editor** as the database administrator.
+3. Refresh the invitation. After someone selects **Sadly can't make it** and leaves anonymity unchecked, their name appears in **AFK**. An anonymous decline never appears by name.
+4. Until you run the upgrade, the site keeps older RSVP functionality but shows **AFK roster available after the database upgrade**.
+
+The upgrade preserves all saved RSVPs and private notes. It adds an opt-in marker with a safe default of false and adds V5 RPC functions. The public list still excludes private notes, email addresses and ticket IDs.
+
 ## Private host dashboard (not on the invitation site)
 
 Use the **private** management views to see both an overall equipment/attendance summary and every guest's details, including optional Sidequest interest and private notes. These are **live SQL views**, not separate copies; updates to the existing RSVPs immediately change the numbers.
